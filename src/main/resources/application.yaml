@@ -1,0 +1,17 @@
+server:
+  port: 8081
+spring:
+  r2dbc:
+    #    url: r2dbc:postgresql://192.168.74.128:5432/chatgpt
+    #    username: postgres
+    #    password: 1212
+    url: r2dbc:mysql://192.168.74.128:3306/querydsl
+    username: root
+    password: 1212
+  webflux:
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd mm:ss
+      time: HH:mm:ss
+  main:
+    allow-bean-definition-overriding: true
