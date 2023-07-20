@@ -22,8 +22,8 @@ public class UserHandler {
     @Bean("userRouters")
     public RouterFunction<ServerResponse> functions() {
         return RouterFunctions.route()
-                .path("/auth", r -> {
-                    r.POST("/register", this::register);
+                .path("/auth", route -> {
+                    route.POST("/register", this::register);
                 })
                 .build();
     }
