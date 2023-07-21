@@ -3,6 +3,11 @@ Content-Type: application/json
 
 
 {
-  "username": "anii",
+  "username": "anii2",
   "password": "1212"
 }
+
+###
+GET http://127.0.0.1:8081/auth/
+Accept: application/json;charset=utf-8
+

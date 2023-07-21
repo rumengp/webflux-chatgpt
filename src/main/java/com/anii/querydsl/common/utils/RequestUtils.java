@@ -1,4 +1,4 @@
-package com.anii.querydsl.common;
+package com.anii.querydsl.common.utils;
 
 import com.anii.querydsl.exception.ValidException;
 import com.fasterxml.jackson.databind.ObjectMapper;

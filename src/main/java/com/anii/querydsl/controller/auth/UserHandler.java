@@ -1,7 +1,7 @@
 package com.anii.querydsl.controller.auth;
 
 import com.anii.querydsl.common.CommonResult;
-import com.anii.querydsl.common.RequestUtils;
+import com.anii.querydsl.common.utils.RequestUtils;
 import com.anii.querydsl.request.UserRegisterReq;
 import com.anii.querydsl.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,16 @@ public class UserHandler {
     @Bean("userRouters")
     public RouterFunction<ServerResponse> functions() {
         return RouterFunctions.route()
-                .path("/auth", route -> {
-                    route.POST("/register", this::register);
-                })
+                .path("/auth", route ->
+                        route.GET("/", this::findAll)
+                                .POST("/register", this::register)
+                )
                 .build();
+    }
+
+    private Mono<ServerResponse> findAll(ServerRequest request) {
+        return userService.findAll()
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> register(ServerRequest request) {

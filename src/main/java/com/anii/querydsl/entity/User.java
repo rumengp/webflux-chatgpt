@@ -1,5 +1,6 @@
 package com.anii.querydsl.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
@@ -25,6 +27,7 @@ public class User implements Serializable {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private Boolean enabled;
@@ -32,9 +35,11 @@ public class User implements Serializable {
     private List<String> roles;
 
     @CreatedDate
+    @Column("create_time")
     private LocalDateTime createTime;
 
     @LastModifiedDate
+    @Column("update_time")
     private LocalDateTime updateTime;
 
 }
