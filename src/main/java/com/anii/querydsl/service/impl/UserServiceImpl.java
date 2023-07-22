@@ -2,13 +2,13 @@ package com.anii.querydsl.service.impl;
 
 import com.anii.querydsl.common.BusinessConstant;
 import com.anii.querydsl.dao.UserRepository;
+import com.anii.querydsl.entity.QUser;
 import com.anii.querydsl.entity.User;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.request.UserRegisterReq;
 import com.anii.querydsl.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,9 +41,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<List<User>> findAll() {
-
         return entityTemplate.select(User.class)
                 .matching(Query.empty())
+                .all().collectList();
+    }
+
+    public Mono<List<User>> page() {
+        QUser user = QUser.user;
+        QUser m = new QUser("m");
+        userRepository.findAll(user.id.in(1, 2, 3));
+        return userRepository.query(query ->
+                        query.select(userRepository.entityProjection())
+                                .from(user)
+                                .leftJoin(m).on(user.id.eq(m.id)))
                 .all().collectList();
     }
 
