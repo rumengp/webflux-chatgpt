@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   r2dbc:
-    url: r2dbc:mysql://192.168.74.128:3306/querydsl
+    url: r2dbc:mysql://192.168.40.128:3306/querydsl
     username: root
     password: 1212
   webflux:
