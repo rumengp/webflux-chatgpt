@@ -4,6 +4,7 @@ import com.anii.querydsl.common.BusinessConstant;
 import com.anii.querydsl.common.utils.UserContextHolder;
 import com.anii.querydsl.dao.ChatRoleRepository;
 import com.anii.querydsl.entity.ChatRole;
+import com.anii.querydsl.enums.chat.ChatRoleTypeEnum;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.request.chat.ChatRoleCreateRequest;
 import com.anii.querydsl.service.IChatRoleService;
@@ -24,12 +25,9 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
                 .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
                 .then(Mono.just(chatRole))
-                .zipWith(UserContextHolder.getUsername(),
-                        (role, name) -> {
-                            role.setUsername(name);
-                            return role;
-                        }
-                )
+                .doOnNext(role -> {
+                    role.setType(ChatRoleTypeEnum.USER);
+                })
                 .flatMap(repository::save);
     }
 }

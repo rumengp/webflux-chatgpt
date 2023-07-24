@@ -16,7 +16,7 @@ CREATE TABLE `chat_role`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'id',
     `type`            VARCHAR(16)  NOT NULL COMMENT '角色类型，SYSTEM，USER',
-    `username`        BIGINT COMMENT '角色所属的用户名称',
+    `username`        VARCHAR(64)  NOT NULL COMMENT '角色所属的用户名称',
     `command`         VARCHAR(256) NOT NULL COMMENT '角色指令',
     `model`           VARCHAR(32)  NOT NULL COMMENT '使用哪个模型',
     `nick_name`       VARCHAR(32)  NOT NULL COMMENT '角色昵称',
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS `chat`;
 CREATE TABLE `chat`
 (
     `id`              BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'id',
-    `username`        BIGINT COMMENT '角色所属的用户名称',
+    `username`        VARCHAR(64)  NOT NULL COMMENT '角色所属的用户名称',
     `role_id`         BIGINT       NOT NULL COMMENT '聊天所属角色',
     `title`           VARCHAR(32) COMMENT '聊天标题',
     `command`         VARCHAR(256) NOT NULL COMMENT '角色指令',
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `chat_message`;
 CREATE TABLE `chat_message`
 (
     `id`          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'id',
-    `username`    BIGINT COMMENT '角色所属的用户名称',
+    `username`        VARCHAR(64)  NOT NULL COMMENT '角色所属的用户名称',
     `chat_id`     BIGINT      NOT NULL COMMENT '聊天所属角色',
     `type`        VARCHAR(16) NOT NULL COMMENT '消息类型，USER,ASSISTANT',
     `content`     TEXT        NOT NULL COMMENT '聊天内容',

@@ -1,5 +1,6 @@
 package com.anii.querydsl.entity;
 
+import com.anii.querydsl.enums.chat.MessageTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class ChatMessage implements Serializable {
     /**
      * 消息类型，USER,ASSISTANT
      */
-    private String type;
+    private MessageTypeEnum type;
 
     /**
      * 聊天内容

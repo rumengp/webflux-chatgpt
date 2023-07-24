@@ -1,5 +1,7 @@
 package com.anii.querydsl.entity;
 
+import com.anii.querydsl.enums.chat.ChatRoleTypeEnum;
+import com.anii.querydsl.enums.chat.ModelTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +32,7 @@ public class ChatRole implements Serializable {
     /**
      * 角色类型，SYSTEM，USER
      */
-    private String type;
+    private ChatRoleTypeEnum type;
 
     /**
      * 角色所属的用户id
@@ -46,7 +48,7 @@ public class ChatRole implements Serializable {
     /**
      * 使用哪个模型
      */
-    private String model;
+    private ModelTypeEnum model;
 
     /**
      * 角色昵称
