@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 import org.springframework.data.r2dbc.dialect.DialectResolver;
+import org.springframework.data.relational.core.mapping.DefaultNamingStrategy;
+import org.springframework.data.relational.core.mapping.NamingStrategy;
 
 import java.util.List;
 
@@ -24,5 +26,10 @@ public class R2DBCConfig {
                 new JsonToListConverter(objectMapper)
         );
         return R2dbcCustomConversions.of(dialect, converters);
+    }
+
+    @Bean
+    public NamingStrategy defaultNamingStrategy() {
+        return new DefaultNamingStrategy();
     }
 }

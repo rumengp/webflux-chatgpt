@@ -17,7 +17,18 @@ Content-Type: application/json
   "password": "1212"
 }
 
-###
-#> {% client.global.set("token", response.body.data) %}
+> {% client.global.set("token", response.body.data) %}
 
-###
+### 新建角色
+POST {{baseUrl}}/chat/role/
+Accept: application/json;charset=utf-8
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "你是一个好帮手",
+  "model": "GPT_35_TURBO",
+  "nickName": "好帮手",
+  "welcome": "你好",
+  "mark": "nnnnn"
+}

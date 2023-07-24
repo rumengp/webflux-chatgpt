@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -34,6 +35,7 @@ public class ChatRole implements Serializable {
     /**
      * 角色所属的用户id
      */
+    @CreatedBy
     private String username;
 
     /**

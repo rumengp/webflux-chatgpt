@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -31,8 +30,8 @@ public class SecurityConfig {
                                                          JwtTokenProvider tokenProvider,
                                                          ReactiveAuthenticationManager reactiveAuthenticationManager) {
         return http.authorizeExchange(spec -> spec
-                        .pathMatchers(HttpMethod.GET, "/user/**").authenticated()
-                        .pathMatchers("/**").permitAll()
+                        .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers("/**").authenticated()
                 )
                 .authenticationManager(reactiveAuthenticationManager)
                 .csrf(csrfSpec -> csrfSpec.disable())

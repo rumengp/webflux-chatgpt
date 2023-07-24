@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -26,6 +27,7 @@ public class ChatMessage implements Serializable {
     /**
      * 所属用户id
      */
+    @CreatedBy
     private String username;
 
     /**
