@@ -1,4 +1,6 @@
 package com.anii.querydsl.service;
 
-public interface IChatMessageService {
+import com.anii.querydsl.entity.ChatMessage;
+
+public interface IChatMessageService extends IService<ChatMessage, Long> {
 }

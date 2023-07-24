@@ -20,9 +20,7 @@ import static com.anii.querydsl.mapper.UserMapper.USER_MAPPER;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository;
+public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> implements UserService {
 
     private final PasswordEncoder encoder;
 
@@ -30,17 +28,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> register(UserRegisterReq userReq) {
-        return userRepository.existsByUsername(userReq.username())
+        return repository.existsByUsername(userReq.username())
                 .flatMap(exist -> exist ? Mono.error(new BusinessException(BusinessConstant.USERNAME_EXIST, BusinessConstant.USERNAME_EXIST_CODE))
                         : Mono.empty())
                 .then(Mono.just(userReq))
                 .map(USER_MAPPER::toDo)
                 .doOnNext(user -> user.setPassword(encoder.encode(user.getPassword())))
-                .flatMap(userRepository::save);
+                .flatMap(repository::save);
     }
 
     @Override
-    public Mono<List<User>> findAll() {
+    public Mono<List<User>> findAllPage() {
         return entityTemplate.select(User.class)
                 .matching(Query.empty())
                 .all().collectList();
@@ -49,9 +47,8 @@ public class UserServiceImpl implements UserService {
     public Mono<List<User>> page() {
         QUser user = QUser.user;
         QUser m = new QUser("m");
-        userRepository.findAll(user.id.in(1, 2, 3));
-        return userRepository.query(query ->
-                        query.select(userRepository.entityProjection())
+        return repository.query(query ->
+                        query.select(repository.entityProjection())
                                 .from(user)
                                 .leftJoin(m).on(user.id.eq(m.id)))
                 .all().collectList();

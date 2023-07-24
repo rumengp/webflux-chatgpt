@@ -16,19 +16,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl extends ServiceImpl<PersonRepository, Person, Long> implements PersonService {
 
     private static QPerson person = QPerson.person;
-
-    private final PersonRepository personRepository;
 
     @Override
     public Mono<Page<Person>> pagePerson(PersonPageRequest personPageRequest) {
 
         PageRequest of = PageRequest.of(personPageRequest.getPageNo(), personPageRequest.getPageSize());
-
-        Mono<Page<Person>> page = personRepository.findAll(query ->
-                        query.select(personRepository.entityProjection())
+        Mono<Page<Person>> page = repository.findAll(query ->
+                        query.select(repository.entityProjection())
                                 .from(person)
                                 .where(person.name.like(personPageRequest.getName() + "%"))
                                 .orderBy(person.id.asc())
@@ -41,8 +38,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Mono<List<Person>> findByName(String name) {
-        return personRepository.query(query ->
-                        query.select(personRepository.entityProjection())
+        return repository.query(query ->
+                        query.select(repository.entityProjection())
                                 .from(person)
                                 .where(person.name.like(name))
                 )

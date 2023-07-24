@@ -1,6 +1,7 @@
 package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.service.IChatRoleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -10,7 +11,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public record ChatRoleHandler(IChatRoleService chatRoleService) {
+@RequiredArgsConstructor
+public class ChatRoleHandler {
+
+    private final IChatRoleService chatRoleService;
 
     @Bean("chatRoleRouters")
     public RouterFunction<ServerResponse> functions() {

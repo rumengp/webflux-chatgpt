@@ -6,8 +6,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends IService<User, Long> {
     Mono<User> register(UserRegisterReq userReq);
 
-    Mono<List<User>> findAll();
+    Mono<List<User>> findAllPage();
 }

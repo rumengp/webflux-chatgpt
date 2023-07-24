@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public interface PersonService{
+public interface PersonService extends IService<Person, Long> {
     Mono<Page<Person>> pagePerson(PersonPageRequest personPageRequest);
 
     Mono<List<Person>> findByName(String name);
