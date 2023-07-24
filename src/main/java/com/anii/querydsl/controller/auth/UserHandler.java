@@ -2,10 +2,12 @@ package com.anii.querydsl.controller.auth;
 
 import com.anii.querydsl.common.CommonResult;
 import com.anii.querydsl.common.utils.RequestUtils;
+import com.anii.querydsl.request.AuthRequest;
 import com.anii.querydsl.request.UserRegisterReq;
 import com.anii.querydsl.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -25,8 +27,19 @@ public class UserHandler {
                 .path("/auth", route ->
                         route.GET("/", this::findAll)
                                 .POST("/register", this::register)
+                                .POST("/login", this::login)
                 )
                 .build();
+    }
+
+    private Mono<ServerResponse> login(ServerRequest request) {
+        return RequestUtils.parse(request, AuthRequest.class)
+                .flatMap(userService::login)
+                .flatMap(token ->
+                        ServerResponse.ok()
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer ".concat(token))
+                                .body(CommonResult.ok(token), CommonResult.class)
+                );
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {

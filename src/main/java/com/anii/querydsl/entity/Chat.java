@@ -1,6 +1,9 @@
 package com.anii.querydsl.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -8,6 +11,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table("chat")
 public class Chat implements Serializable {
 
@@ -20,7 +26,7 @@ public class Chat implements Serializable {
     /**
      * 所属用户id
      */
-    private Long userId;
+    private String username;
 
     /**
      * 聊天所属角色

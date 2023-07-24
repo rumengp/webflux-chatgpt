@@ -1,17 +1,22 @@
 package com.anii.querydsl.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table("chat_role")
 public class ChatRole implements Serializable {
 
@@ -29,7 +34,7 @@ public class ChatRole implements Serializable {
     /**
      * 角色所属的用户id
      */
-    private Long userId;
+    private String username;
 
     /**
      * 角色指令

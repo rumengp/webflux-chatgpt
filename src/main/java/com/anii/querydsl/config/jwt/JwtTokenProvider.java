@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.joining;
 
@@ -26,6 +27,7 @@ import static java.util.stream.Collectors.joining;
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "roles";
+    private static final String USER_INFO_KEY = "user";
 
     private final JwtProperties jwtProperties;
 
@@ -45,8 +47,13 @@ public class JwtTokenProvider {
                 .getAuthorities();
         Claims claims = Jwts.claims().setSubject(username);
         if (!authorities.isEmpty()) {
-            claims.put(AUTHORITIES_KEY, authorities.stream()
-                    .map(GrantedAuthority::getAuthority).collect(joining(",")));
+            claims.put(AUTHORITIES_KEY,
+                    authorities.stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .collect(joining(",")));
+        }
+        if (Objects.nonNull(authentication.getDetails())) {
+            claims.put(USER_INFO_KEY, authentication.getDetails());
         }
 
         Date now = new Date();
@@ -63,10 +70,10 @@ public class JwtTokenProvider {
 
         Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
 
-        Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-                ? AuthorityUtils.NO_AUTHORITIES
-                : AuthorityUtils
-                .commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+        Collection<? extends GrantedAuthority> authorities =
+                authoritiesClaim == null
+                        ? AuthorityUtils.NO_AUTHORITIES
+                        : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
 
         User principal = new User(claims.getSubject(), "", authorities);
 

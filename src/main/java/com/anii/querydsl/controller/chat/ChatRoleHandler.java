@@ -1,5 +1,8 @@
 package com.anii.querydsl.controller.chat;
 
+import com.anii.querydsl.common.CommonResult;
+import com.anii.querydsl.common.utils.RequestUtils;
+import com.anii.querydsl.request.chat.ChatRoleCreateRequest;
 import com.anii.querydsl.service.IChatRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +49,9 @@ public class ChatRoleHandler {
     }
 
     private Mono<ServerResponse> createNewRole(ServerRequest request) {
-        return null;
+        return RequestUtils.parse(request, ChatRoleCreateRequest.class)
+                .flatMap(chatRoleService::saveChatRole)
+                .flatMap(CommonResult::ok);
     }
 
 }
