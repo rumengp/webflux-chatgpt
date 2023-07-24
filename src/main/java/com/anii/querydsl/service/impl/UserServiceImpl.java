@@ -38,11 +38,12 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> imp
     @Override
     public Mono<User> register(UserRegisterReq userReq) {
         return repository.existsByUsername(userReq.username())
-                .flatMap(exist -> exist ? Mono.error(new BusinessException(BusinessConstant.USERNAME_EXIST, BusinessConstant.USERNAME_EXIST_CODE))
-                        : Mono.empty())
-                .then(Mono.just(userReq))
+                .filter(Boolean.FALSE::equals) // 判断是否存在，如果存在则为空，然后会报错
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.USERNAME_EXIST, BusinessConstant.USERNAME_EXIST_CODE)))
+                .checkpoint()
+                .then(Mono.defer(() -> Mono.just(userReq)))
                 .map(USER_MAPPER::toDo)
-                .doOnNext(user -> user.setPassword(encoder.encode(user.getPassword())))
+                .doOnNext(user -> user.setPassword(encoder.encode(user.getPassword()))) // 加密
                 .flatMap(repository::save);
     }
 

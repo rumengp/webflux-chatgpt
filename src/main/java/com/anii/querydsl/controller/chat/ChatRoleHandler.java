@@ -33,7 +33,9 @@ public class ChatRoleHandler {
     }
 
     private Mono<ServerResponse> deleteById(ServerRequest request) {
-        return null;
+        Long id = Long.parseLong(request.pathVariable("id"));
+        return chatRoleService.deleteById(id)
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> updateById(ServerRequest request) {
@@ -41,7 +43,9 @@ public class ChatRoleHandler {
     }
 
     private Mono<ServerResponse> findById(ServerRequest request) {
-        return null;
+        Long id = Long.parseLong(request.pathVariable("id"));
+        return chatRoleService.findByIdAndUsername(id)
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {

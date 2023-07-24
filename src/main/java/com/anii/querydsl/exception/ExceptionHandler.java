@@ -39,9 +39,16 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
     protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions
                 .route(isException(ValidException.class), this::handleValidException)
+                .andRoute(isException(NotFoundException.class), this::handleNotFoundException)
                 .andRoute(isException(BusinessException.class), this::handleBusinessException)
                 .andRoute(isException(Exception.class), this::handleException);
     }
+
+    private Mono<ServerResponse> handleNotFoundException(ServerRequest request) {
+        NotFoundException exception = (NotFoundException) getError(request);
+        return CommonResult.notFound(exception.getMessage());
+    }
+
 
     private Mono<ServerResponse> handleBusinessException(ServerRequest request) {
         BusinessException error = (BusinessException) getError(request);

@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface IChatRoleService extends IService<ChatRole, Long> {
     Mono<ChatRole> saveChatRole(ChatRoleCreateRequest chatRoleCreateRequest);
+
+    Mono<ChatRole> findByIdAndUsername(Long id);
 }

@@ -10,4 +10,7 @@ public interface BusinessConstant {
 
     String RESOURCE_NAME_EXISTS = "该名称已存在";
     String RESOURCE_NAME_EXISTS_CODE = "10102";
+
+    String RESOURCE_NOT_FOUND = "该资源不存在";
+    String RESOURCE_NOT_FOUND_CODE = "10404";
 }

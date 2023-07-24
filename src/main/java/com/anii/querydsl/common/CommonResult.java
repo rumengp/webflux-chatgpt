@@ -55,6 +55,12 @@ public record CommonResult<T>(T data, String message, String code) {
                 .bodyValue(new CommonResult<>("", message, BAD_CODE));
     }
 
+    public static Mono<ServerResponse> notFound(String message) {
+        return ServerResponse.status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CommonResult<>("", message, BAD_CODE));
+    }
+
     public static Mono<ServerResponse> error() {
         return error(ERROR_MESSAGE, ERROR_CODE);
     }

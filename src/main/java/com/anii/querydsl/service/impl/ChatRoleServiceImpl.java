@@ -30,4 +30,13 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
                 })
                 .flatMap(repository::save);
     }
+
+    @Override
+    public Mono<ChatRole> findByIdAndUsername(Long id) {
+        UserContextHolder.getUsername()
+                        .flatMap(name -> repository.findByIdAndUsername(id, name))
+                .switchIfEmpty(Mono.error(() -> new NotFoun))
+
+        return null;
+    }
 }
