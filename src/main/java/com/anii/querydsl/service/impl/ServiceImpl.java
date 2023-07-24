@@ -1,16 +1,16 @@
 package com.anii.querydsl.service.impl;
 
 import com.anii.querydsl.service.IService;
-import jakarta.annotation.Resource;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public abstract class ServiceImpl<R extends ReactiveCrudRepository<T, ID>, T, ID> implements IService<T, ID> {
+public class ServiceImpl<R extends ReactiveCrudRepository<T, ID>, T, ID> implements IService<T, ID> {
 
-    @Resource
+    @Autowired
     protected R repository;
 
     @Override

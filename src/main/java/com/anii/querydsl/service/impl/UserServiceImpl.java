@@ -58,7 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> imp
         return this.authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()))
                 .onErrorMap(ex -> new BusinessException(BusinessConstant.AUTH_ERROR, BusinessConstant.AUTH_ERROR_CODE, ex))
-                .zipWith(repository.findByUsername(authRequest.username()), (auth, user) -> {
+                .zipWith(repository.findByUsername(authRequest.username()).map(USER_MAPPER::toContext), (auth, user) -> {
                     if (auth instanceof AbstractAuthenticationToken t) {
                         t.setDetails(user);
                     }

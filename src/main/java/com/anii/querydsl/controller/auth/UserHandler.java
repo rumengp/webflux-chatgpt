@@ -7,7 +7,6 @@ import com.anii.querydsl.request.UserRegisterReq;
 import com.anii.querydsl.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -35,11 +34,7 @@ public class UserHandler {
     private Mono<ServerResponse> login(ServerRequest request) {
         return RequestUtils.parse(request, AuthRequest.class)
                 .flatMap(userService::login)
-                .flatMap(token ->
-                        ServerResponse.ok()
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer ".concat(token))
-                                .body(CommonResult.ok(token), CommonResult.class)
-                );
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {

@@ -1,6 +1,6 @@
 package com.anii.querydsl.common.utils;
 
-import com.anii.querydsl.entity.User;
+import com.anii.querydsl.common.UserContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -16,8 +16,8 @@ public class UserContextHolder {
     public static Mono<Long> getUserId() {
         return getToken()
                 .map(UsernamePasswordAuthenticationToken::getDetails)
-                .cast(User.class)
-                .map(User::getId);
+                .cast(UserContext.class)
+                .map(UserContext::id);
     }
 
     private static Mono<UsernamePasswordAuthenticationToken> getToken() {

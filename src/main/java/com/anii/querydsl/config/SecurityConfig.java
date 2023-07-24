@@ -4,6 +4,7 @@ import com.anii.querydsl.config.jwt.JwtTokenAuthenticationFilter;
 import com.anii.querydsl.config.jwt.JwtTokenProvider;
 import com.anii.querydsl.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -49,7 +50,7 @@ public class SecurityConfig {
                 .map(u -> User
                         .withUsername(u.getUsername())
                         .password(u.getPassword())
-                        .authorities(u.getRoles().toArray(new String[0]))
+                        .authorities(CollectionUtils.emptyIfNull(u.getRoles()).toArray(new String[0]))
                         .accountExpired(!u.getEnabled())
                         .credentialsExpired(!u.getEnabled())
                         .disabled(!u.getEnabled())
