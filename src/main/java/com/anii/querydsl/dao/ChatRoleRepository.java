@@ -8,7 +8,10 @@ import reactor.core.publisher.Mono;
 
 public interface ChatRoleRepository extends QuerydslR2dbcRepository<ChatRole, Long> {
 
-    Mono<Boolean> existsByUsernameAndAndNickName(String username, String nickName);
+    Mono<Boolean> existsByUsernameAndNickName(String username, String nickName);
+
+    // @Query("SELECT COUNT(*) FROM chat_role cr WHERE username = :username AND nick_name = :nickName AND id != :id")
+    Mono<Boolean> existsByUsernameAndNickNameAndIdNot(String username, String nickName, Long id);
 
     Mono<ChatRole> findByIdAndUsername(Long id, String username);
 

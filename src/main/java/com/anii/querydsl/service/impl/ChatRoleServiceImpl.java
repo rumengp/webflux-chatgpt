@@ -23,20 +23,18 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
     @Override
     public Mono<ChatRole> saveChatRole(ChatRoleCreateRequest request) {
         ChatRole chatRole = MAPPER.toDo(request);
+        chatRole.setType(ChatRoleTypeEnum.USER);
         // 角色名用户下唯一
         return assertNotExist(request.nickName())
                 .then(Mono.just(chatRole))
-                .doOnNext(role -> role.setType(ChatRoleTypeEnum.USER))
                 .flatMap(repository::save);
     }
 
     @Override
     public Mono<ChatRole> updateById(Long id, ChatRoleCreateRequest request) {
-        ChatRole chatRole = MAPPER.toDo(request);
-        chatRole.setId(id);
-        return assertExist(id)
-                .then(assertNotExist(request.nickName()))
-                .then(Mono.just(chatRole))
+        return assertNotExist(id, request.nickName())
+                .then(this.findById(id))
+                .doOnNext(role -> MAPPER.copyProperties(request, role))
                 .flatMap(repository::save);
     }
 
@@ -58,9 +56,8 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
 
     @Override
     public Mono<Void> deleteById(Long id) {
-        return Mono.just(id)
-                .zipWith(UserContextHolder.getUsername(), repository::deleteByIdAndUsername)
-                .then();
+        return UserContextHolder.getUsername()
+                .flatMap(username -> repository.deleteByIdAndUsername(id, username));
     }
 
     private Mono<Void> assertExist(Long id) {
@@ -74,8 +71,15 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
 
     private Mono<Void> assertNotExist(String nickName) {
         return UserContextHolder.getUsername()
-                .zipWith(Mono.just(nickName), repository::existsByUsernameAndAndNickName)
-                .flatMap(Function.identity())
+                .flatMap(username -> repository.existsByUsernameAndNickName(username, nickName))
+                .filter(Boolean.FALSE::equals)
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
+                .then();
+    }
+
+    private Mono<Void> assertNotExist(Long id, String nickName) {
+        return UserContextHolder.getUsername()
+                .flatMap(username -> repository.existsByUsernameAndNickNameAndIdNot(username, nickName, id))
                 .filter(Boolean.FALSE::equals)
                 .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
                 .then();

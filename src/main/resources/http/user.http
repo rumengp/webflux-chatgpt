@@ -17,10 +17,13 @@ Content-Type: application/json
   "password": "1212"
 }
 
-> {% client.global.set("token", response.body.data) %}
+> {%
+    client.global.set("token", response.body.data)
+%}
+
 
 ### 新建角色
-POST {{baseUrl}}/chat/role/
+POST http://127.0.0.1:8081/chat/role/
 Accept: application/json;charset=utf-8
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -28,7 +31,35 @@ Authorization: Bearer {{token}}
 {
   "command": "你是一个好帮手",
   "model": "GPT_35_TURBO",
-  "nickName": "好帮手",
+  "nickName": "好帮手4",
   "welcome": "你好",
   "mark": "nnnnn"
 }
+
+### 查询全部角色
+GET http://127.0.0.1:8081/chat/role/
+Accept: application/json;charset=utf-8
+Authorization: Bearer {{token}}
+
+### 查询指定角色
+GET http://127.0.0.1:8081/chat/role/1
+Accept: application/json;charset=utf-8
+Authorization: Bearer {{token}}
+
+### 更新角色
+PUT http://127.0.0.1:8081/chat/role/4
+Accept: application/json;charset=utf-8
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "command": "你是谁",
+  "model": "GPT_35_TURBO",
+  "nickName": "好帮手4",
+  "welcome": "你好",
+  "mark": "nnnnn"
+}
+
+### 删除指定角色
+DELETE http://127.0.0.1:8081/chat/role/1
+Authorization: Bearer {{token}}
