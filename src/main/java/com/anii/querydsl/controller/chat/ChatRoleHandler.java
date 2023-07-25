@@ -52,7 +52,7 @@ public class ChatRoleHandler {
 
     private Mono<ServerResponse> findById(ServerRequest request) {
         Long id = Long.parseLong(request.pathVariable("id"));
-        return chatRoleService.findByIdAndUsername(id)
+        return chatRoleService.findById(id)
                 .flatMap(CommonResult::ok);
     }
 

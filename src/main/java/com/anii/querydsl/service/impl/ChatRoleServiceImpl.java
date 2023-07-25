@@ -12,6 +12,7 @@ import com.anii.querydsl.service.IChatRoleService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static com.anii.querydsl.mapper.ChatRoleMapper.MAPPER;
@@ -23,7 +24,7 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
     public Mono<ChatRole> saveChatRole(ChatRoleCreateRequest request) {
         ChatRole chatRole = MAPPER.toDo(request);
         // 角色名用户下唯一
-        return checkExist(request.nickName())
+        return assertNotExist(request.nickName())
                 .then(Mono.just(chatRole))
                 .doOnNext(role -> role.setType(ChatRoleTypeEnum.USER))
                 .flatMap(repository::save);
@@ -33,13 +34,22 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
     public Mono<ChatRole> updateById(Long id, ChatRoleCreateRequest request) {
         ChatRole chatRole = MAPPER.toDo(request);
         chatRole.setId(id);
-        return checkExist(request.nickName())
+        return assertExist(id)
+                .then(assertNotExist(request.nickName()))
                 .then(Mono.just(chatRole))
                 .flatMap(repository::save);
     }
 
     @Override
-    public Mono<ChatRole> findByIdAndUsername(Long id) {
+    public Mono<List<ChatRole>> findAll() {
+        return UserContextHolder.getUsername()
+                .zipWith(Mono.just(ChatRoleTypeEnum.SYSTEM), repository::findAllByUsernameOrType)
+                .flatMapMany(Function.identity())
+                .collectList();
+    }
+
+    @Override
+    public Mono<ChatRole> findById(Long id) {
         return Mono.just(id)
                 .zipWith(UserContextHolder.getUsername(), repository::findByIdAndUsername)
                 .flatMap(Function.identity())
@@ -53,7 +63,16 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
                 .then();
     }
 
-    private Mono<Void> checkExist(String nickName) {
+    private Mono<Void> assertExist(Long id) {
+        return Mono.just(id)
+                .zipWith(UserContextHolder.getUsername(), repository::existsByIdAndUsername)
+                .flatMap(Function.identity())
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
+                .then();
+    }
+
+    private Mono<Void> assertNotExist(String nickName) {
         return UserContextHolder.getUsername()
                 .zipWith(Mono.just(nickName), repository::existsByUsernameAndAndNickName)
                 .flatMap(Function.identity())

@@ -1,6 +1,8 @@
 package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
+import com.anii.querydsl.common.utils.RequestUtils;
+import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +15,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public record ChatHandler {
+public class ChatHandler {
 
-    private static IChatService chatService;
+    private final IChatService chatService;
 
     @Bean("chatRouters")
     public RouterFunction<ServerResponse> functions() {
@@ -47,12 +49,15 @@ public record ChatHandler {
 
     private Mono<ServerResponse> findById(ServerRequest request) {
         Long id = Long.parseLong(request.pathVariable("id"));
-        chatService.findById()
-        return null;
+        return chatService.findById(id)
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {
-        return null;
+        return RequestUtils.parse(request, ChatRoleQueryRequest.class)
+                .flatMapMany(chatService::findAllByRole)
+                .collectList()
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> createNewChat(ServerRequest request) {
