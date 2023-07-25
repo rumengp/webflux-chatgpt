@@ -1,4 +1,4 @@
-package com.anii.querydsl.request.chat;
+package com.anii.querydsl.request.chat.role;
 
 import com.anii.querydsl.enums.chat.ModelTypeEnum;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
 package com.anii.querydsl.mapper;
 
 import com.anii.querydsl.entity.ChatRole;
-import com.anii.querydsl.request.chat.ChatRoleCreateRequest;
+import com.anii.querydsl.request.chat.role.ChatRoleCreateRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

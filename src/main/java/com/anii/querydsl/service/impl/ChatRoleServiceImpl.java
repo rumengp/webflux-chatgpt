@@ -6,10 +6,13 @@ import com.anii.querydsl.dao.ChatRoleRepository;
 import com.anii.querydsl.entity.ChatRole;
 import com.anii.querydsl.enums.chat.ChatRoleTypeEnum;
 import com.anii.querydsl.exception.BusinessException;
-import com.anii.querydsl.request.chat.ChatRoleCreateRequest;
+import com.anii.querydsl.exception.NotFoundException;
+import com.anii.querydsl.request.chat.role.ChatRoleCreateRequest;
 import com.anii.querydsl.service.IChatRoleService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
 
 import static com.anii.querydsl.mapper.ChatRoleMapper.MAPPER;
 
@@ -20,23 +23,43 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
     public Mono<ChatRole> saveChatRole(ChatRoleCreateRequest request) {
         ChatRole chatRole = MAPPER.toDo(request);
         // 角色名用户下唯一
-        return UserContextHolder.getUsername()
-                .flatMap(username -> repository.existsByUsernameAndAndNickName(username, request.nickName()))
-                .filter(Boolean.FALSE::equals)
-                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
+        return checkExist(request.nickName())
                 .then(Mono.just(chatRole))
-                .doOnNext(role -> {
-                    role.setType(ChatRoleTypeEnum.USER);
-                })
+                .doOnNext(role -> role.setType(ChatRoleTypeEnum.USER))
+                .flatMap(repository::save);
+    }
+
+    @Override
+    public Mono<ChatRole> updateById(Long id, ChatRoleCreateRequest request) {
+        ChatRole chatRole = MAPPER.toDo(request);
+        chatRole.setId(id);
+        return checkExist(request.nickName())
+                .then(Mono.just(chatRole))
                 .flatMap(repository::save);
     }
 
     @Override
     public Mono<ChatRole> findByIdAndUsername(Long id) {
-        UserContextHolder.getUsername()
-                        .flatMap(name -> repository.findByIdAndUsername(id, name))
-                .switchIfEmpty(Mono.error(() -> new NotFoun))
-
-        return null;
+        return Mono.just(id)
+                .zipWith(UserContextHolder.getUsername(), repository::findByIdAndUsername)
+                .flatMap(Function.identity())
+                .switchIfEmpty(Mono.error(() -> new NotFoundException()));
     }
+
+    @Override
+    public Mono<Void> deleteById(Long id) {
+        return Mono.just(id)
+                .zipWith(UserContextHolder.getUsername(), repository::deleteByIdAndUsername)
+                .then();
+    }
+
+    private Mono<Void> checkExist(String nickName) {
+        return UserContextHolder.getUsername()
+                .zipWith(Mono.just(nickName), repository::existsByUsernameAndAndNickName)
+                .flatMap(Function.identity())
+                .filter(Boolean.FALSE::equals)
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
+                .then();
+    }
+
 }

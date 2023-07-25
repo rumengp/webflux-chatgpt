@@ -2,7 +2,7 @@ package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
 import com.anii.querydsl.common.utils.RequestUtils;
-import com.anii.querydsl.request.chat.ChatRoleCreateRequest;
+import com.anii.querydsl.request.chat.role.ChatRoleCreateRequest;
 import com.anii.querydsl.service.IChatRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -39,7 +41,13 @@ public class ChatRoleHandler {
     }
 
     private Mono<ServerResponse> updateById(ServerRequest request) {
-        return null;
+        Long id = Long.parseLong(request.pathVariable("id"));
+        return Mono.justOrEmpty(id)
+                .zipWith(RequestUtils.parseAndValid(request, ChatRoleCreateRequest.class),
+                        chatRoleService::updateById
+                )
+                .flatMap(Function.identity())
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> findById(ServerRequest request) {
@@ -49,11 +57,12 @@ public class ChatRoleHandler {
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {
-        return null;
+        return chatRoleService.findAll()
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> createNewRole(ServerRequest request) {
-        return RequestUtils.parse(request, ChatRoleCreateRequest.class)
+        return RequestUtils.parseAndValid(request, ChatRoleCreateRequest.class)
                 .flatMap(chatRoleService::saveChatRole)
                 .flatMap(CommonResult::ok);
     }

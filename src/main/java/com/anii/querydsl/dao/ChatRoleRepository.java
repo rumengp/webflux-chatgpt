@@ -9,4 +9,6 @@ public interface ChatRoleRepository extends QuerydslR2dbcRepository<ChatRole, Lo
     Mono<Boolean> existsByUsernameAndAndNickName(String username, String nickName);
 
     Mono<ChatRole> findByIdAndUsername(Long id, String username);
+
+    Mono<Void> deleteByIdAndUsername(Long id, String username);
 }

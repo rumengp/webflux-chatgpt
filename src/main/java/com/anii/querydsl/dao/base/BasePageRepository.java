@@ -1,4 +1,4 @@
-package com.anii.querydsl.dao;
+package com.anii.querydsl.dao.base;
 
 import com.infobip.spring.data.r2dbc.QuerydslR2dbcRepository;
 import com.querydsl.sql.SQLQuery;
