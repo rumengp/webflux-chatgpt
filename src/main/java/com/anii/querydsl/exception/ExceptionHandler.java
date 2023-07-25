@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -38,13 +39,16 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
     @Override
     protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions
-                .route(isException(ValidException.class), this::handleValidException)
-                .andRoute(isException(NotFoundException.class), this::handleNotFoundException)
-                .andRoute(isException(BusinessException.class), this::handleBusinessException)
-                .andRoute(isException(Exception.class), this::handleException);
+                .route(isException(err -> err instanceof ValidException), this::handleValidException)
+                .andRoute(isException(err -> err instanceof NotFoundException), this::handleNotFoundException)
+                .andRoute(isException(err -> err instanceof BusinessException), this::handleBusinessException)
+                .andRoute(isException(err -> err instanceof Exception), this::handleException);
     }
 
     private Mono<ServerResponse> handleNotFoundException(ServerRequest request) {
+        if (getError(request) instanceof NotFoundException e) {
+
+        }
         NotFoundException exception = (NotFoundException) getError(request);
         return CommonResult.notFound(exception.getMessage());
     }
@@ -67,11 +71,18 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
     }
 
     /**
-     * 判断抛出的异常是否是指定的类型
-     *
-     * @param clazz
-     * @param <T>
-     * @return
+     * 判断抛出的异常是否是指定的类型, 函数柯里化
+     * isException(err -> err instanceof Exception)
+     */
+    private RequestPredicate isException(Function<Throwable, Boolean> function) {
+        return request -> {
+            Throwable error = getError(request);
+            return function.apply(error);
+        };
+    }
+
+    /**
+     * 判断抛出的异常是否是指定的类型, 利用反射
      */
     private <T> RequestPredicate isException(Class<T> clazz) {
         Objects.requireNonNull(clazz, "clazz not allow null");
