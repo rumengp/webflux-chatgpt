@@ -5,6 +5,7 @@ import com.anii.querydsl.dao.ChatRepository;
 import com.anii.querydsl.entity.Chat;
 import com.anii.querydsl.exception.NotFoundException;
 import com.anii.querydsl.request.chat.ChatCreateRequest;
+import com.anii.querydsl.request.chat.ChatUpdateRequest;
 import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatRoleService;
 import com.anii.querydsl.service.IChatService;
@@ -15,6 +16,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+
+import static com.anii.querydsl.mapper.ChatMapper.MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -51,17 +54,19 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     @Override
     public Mono<Chat> createNewChat(ChatCreateRequest request) {
         // 先检查是否存在该角色
-        UserContextHolder.getUsername()
-                .flatMap(username -> chatRoleService.existsByIdAndUsername(request.roleId(), username))
-                .doOnNext(this::checkExist)
-                .then();
-
-        return null;
+        return chatRoleService.findById(request.roleId())
+                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
+                .map(chatRole -> MAPPER.fromChatRole(chatRole))
+                .flatMap(repository::save);
     }
 
-    private void checkExist(Boolean exist) {
-        if (!exist) {
-            if (exist) throw new NotFoundException();
-        }
+    @Override
+    public Mono<Chat> updateById(Long id, ChatUpdateRequest req) {
+        return UserContextHolder.getUsername()
+                .flatMap(username -> repository.findByIdAndUsername(id, username))
+                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
+                .doOnNext(chat -> MAPPER.copyProperties(req, chat))
+                .flatMap(repository::save);
     }
+
 }

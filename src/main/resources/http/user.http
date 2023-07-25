@@ -47,7 +47,7 @@ Accept: application/json;charset=utf-8
 Authorization: Bearer {{token}}
 
 ### 更新角色
-PUT http://127.0.0.1:8081/chat/role/4
+PUT http://127.0.0.1:8081/chat/role/1
 Accept: application/json;charset=utf-8
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -55,7 +55,7 @@ Content-Type: application/json
 {
   "command": "你是谁",
   "model": "GPT_35_TURBO",
-  "nickName": "好帮手4",
+  "nickName": "好帮手5",
   "welcome": "你好",
   "mark": "nnnnn"
 }
@@ -63,3 +63,34 @@ Content-Type: application/json
 ### 删除指定角色
 DELETE http://127.0.0.1:8081/chat/role/1
 Authorization: Bearer {{token}}
+
+### 创建聊天
+POST http://127.0.0.1:8081/chat/
+Accept: application/json;charse;,t=utf-8
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "roleId": 1
+}
+
+### 查询聊天
+GET http://127.0.0.1:8081/chat/1
+Accept: application/json;charse;,t=utf-8
+Authorization: Bearer {{token}}
+
+### 更新聊天
+PUT http://127.0.0.1:8081/chat/1
+Accept: application/json;charset=utf-8
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "contextNum": 10
+}
+
+### 删除聊天
+DELETE http://127.0.0.1:8081/chat/1
+Accept: application/json;charset=utf-8
+Authorization: Bearer {{token}}
+
