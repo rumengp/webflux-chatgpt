@@ -2,6 +2,7 @@ package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
 import com.anii.querydsl.common.utils.RequestUtils;
+import com.anii.querydsl.request.chat.ChatCreateRequest;
 import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatService;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,8 @@ public class ChatHandler {
     }
 
     private Mono<ServerResponse> createNewChat(ServerRequest request) {
-        return null;
+        return RequestUtils.parse(request, ChatCreateRequest.class)
+                .flatMap(chatService::createNewChat)
+                .flatMap(CommonResult::ok);
     }
 }
