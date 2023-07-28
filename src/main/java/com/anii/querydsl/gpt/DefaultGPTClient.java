@@ -1,19 +1,22 @@
 package com.anii.querydsl.gpt;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
+import java.nio.charset.StandardCharsets;
+
+@Getter
 public class DefaultGPTClient implements GPTClient {
-
     private final String path = "/v1/chat/completions";
-
-    private final String token;
     private final WebClient webClient;
+
+    public DefaultGPTClient(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     @Override
     public Flux<String> chatStream(Completion completion) {
@@ -36,15 +39,23 @@ public class DefaultGPTClient implements GPTClient {
 
     @Override
     public Mono<String> chat(Completion completion) {
-        if (completion.stream()) {
-            throw new IllegalArgumentException("completion stream must be false");
-        }
-
+        String request = """
+                    {
+                      "model": "gpt-3.5-turbo-16k",
+                      "messages": [
+                        {
+                          "role": "user",
+                          "content": "你是谁"
+                        }
+                      ]
+                    }
+                """;
         return webClient
                 .post()
                 .uri(path)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(completion)
+                .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
                 .bodyToMono(Response.class)
                 .map(response -> response.choices().iterator().next().message().content());

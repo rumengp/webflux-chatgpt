@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ChatRoleTypeEnum {
 
-    USER("USER", "用户角色"),
-    SYSTEM("SYSTEM", "系统内置角色");
+    USER("user", "用户角色"),
+    SYSTEM("system", "系统内置角色"),
+    ASSISTANT("assistant", "助手"),
+    FUNCTION("function", "函数");
 
     private final String code;
 

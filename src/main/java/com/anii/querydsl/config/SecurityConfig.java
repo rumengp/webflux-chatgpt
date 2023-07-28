@@ -31,7 +31,7 @@ public class SecurityConfig {
                                                          ReactiveAuthenticationManager reactiveAuthenticationManager) {
         return http.authorizeExchange(spec -> spec
                         .pathMatchers("/auth/**").permitAll()
-                        .pathMatchers("/**").authenticated()
+                        .pathMatchers("/**").permitAll()
                 )
                 .authenticationManager(reactiveAuthenticationManager)
                 .csrf(csrfSpec -> csrfSpec.disable())

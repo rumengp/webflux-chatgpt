@@ -12,6 +12,14 @@ spring:
       time: HH:mm:ss
   main:
     allow-bean-definition-overriding: true
+  codec:
+    max-in-memory-size: 10MB
 logging:
   level:
-    root: debug
+    root: info
+
+gpt:
+  timeout: 10s
+  proxy:
+    enable: true
+  token: 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

@@ -94,3 +94,26 @@ DELETE http://127.0.0.1:8081/chat/1
 Accept: application/json;charset=utf-8
 Authorization: Bearer {{token}}
 
+### 聊天
+POST http://127.0.0.1:8081/chat/1/stream
+Accept: application/json:charset=utf-8
+Authorization: Bearer {{token}}
+
+
+
+###
+POST https://api.openai.com/v1/chat/completions
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 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
+
+{
+  "model": "gpt-3.5-turbo-16k",
+  "messages": [
+    {
+      "role": "user",
+      "content": "你是谁"
+    }
+  ]
+}
+

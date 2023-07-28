@@ -1,10 +1,14 @@
 package com.anii.querydsl.gpt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
 import java.util.List;
 import java.util.Map;
 
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record Completion(
         String model,
         List<Message> messages,
