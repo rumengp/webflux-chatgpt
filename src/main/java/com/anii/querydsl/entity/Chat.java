@@ -76,12 +76,12 @@ public class Chat implements Serializable {
     /**
      * 话题属性(-2,2)
      */
-    private Integer propertyTopic;
+    private Double propertyTopic;
 
     /**
      * 重复属性(-2,2)
      */
-    private Integer propertyRepeat;
+    private Double propertyRepeat;
 
     /**
      * 创建时间

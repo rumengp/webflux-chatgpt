@@ -2,24 +2,22 @@ package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
 import com.anii.querydsl.common.utils.RequestUtils;
-import com.anii.querydsl.enums.chat.ModelTypeEnum;
-import com.anii.querydsl.gpt.Completion;
 import com.anii.querydsl.gpt.GPTClient;
-import com.anii.querydsl.gpt.Message;
 import com.anii.querydsl.request.chat.ChatCreateRequest;
+import com.anii.querydsl.request.chat.ChatMessageRequest;
 import com.anii.querydsl.request.chat.ChatUpdateRequest;
 import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -44,12 +42,13 @@ public class ChatHandler {
     }
 
     private Mono<ServerResponse> chatStream(ServerRequest request) {
-        Completion completion = Completion.builder()
-                .model(ModelTypeEnum.GPT_35_TURBO.getCode())
-                .messages(List.of(Message.builder().content("你是谁").role("user").build()))
-                .build();
-        Mono<String> chat = gptClient.chat(completion);
-        return CommonResult.ok(chat);
+
+        Long id = Long.valueOf(request.pathVariable("id"));
+        Flux<String> messages = RequestUtils.parse(request, ChatMessageRequest.class)
+                .flatMapMany(req -> chatService.chatStream(id, req));
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_NDJSON)
+                .body(messages, String.class);
     }
 
     private Mono<ServerResponse> deleteById(ServerRequest request) {

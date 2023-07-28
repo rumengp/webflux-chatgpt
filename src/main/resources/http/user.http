@@ -96,7 +96,10 @@ Authorization: Bearer {{token}}
 
 ### 聊天
 POST http://127.0.0.1:8081/chat/1/stream
-Accept: application/json:charset=utf-8
+#Accept: application/json;charset=utf-8
+Accept: application/x-ndjson
+#Accept: text/event-stream
+#Accept: application/stream+json
 Authorization: Bearer {{token}}
 
 

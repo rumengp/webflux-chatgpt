@@ -1,13 +1,25 @@
 package com.anii.querydsl.gpt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
-public record Message(
-        String role,
-        String content,
-        String name,
-        @JsonProperty("function_all")
-        String functionAll) {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Message {
+
+    private String role;
+
+    private String content;
+
+    private String name;
+
+    @JsonProperty("function_all")
+    private String functionAll;
 }

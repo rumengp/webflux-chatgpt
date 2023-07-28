@@ -20,11 +20,7 @@ public class DefaultGPTClient implements GPTClient {
 
     @Override
     public Flux<String> chatStream(Completion completion) {
-
-        if (!completion.stream()) {
-            throw new IllegalArgumentException("completion stream must be true");
-        }
-
+        completion.setStream(Boolean.TRUE);
         return webClient
                 .post()
                 .uri(path)
@@ -33,7 +29,7 @@ public class DefaultGPTClient implements GPTClient {
                 .retrieve()
                 .bodyToFlux(Response.class)
                 .takeWhile(c -> c.choices().get(0).finishReason() == null)
-                .map(c -> c.choices().get(0).delta().content())
+                .map(c -> c.choices().get(0).delta().getContent())
                 .filter(StringUtils::isNotBlank);
     }
 
@@ -58,6 +54,6 @@ public class DefaultGPTClient implements GPTClient {
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
                 .bodyToMono(Response.class)
-                .map(response -> response.choices().iterator().next().message().content());
+                .map(response -> response.choices().iterator().next().message().getContent());
     }
 }
