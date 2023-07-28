@@ -24,8 +24,10 @@ public interface MessageMapper {
     @Mappings({
             @Mapping(target = "model", expression = "java(chat.getModel().getCode())"),
             @Mapping(target = "maxTokens", source = "chat.maxReplay"),
-            @Mapping(target = "presencePenalty", source = "chat.presencePenalty"),
-            @Mapping(target = "frequencyPenalty", source = "")
+            @Mapping(target = "presencePenalty", source = "chat.propertyTopic"),
+            @Mapping(target = "frequencyPenalty", source = "chat.propertyRepeat"),
+            @Mapping(target = "user", source = "chat.username"),
+            @Mapping(target = "topP", source = "chat.propertyRandom")
     })
     Completion toCompletion(Chat chat, List<Message> messages);
 

@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum MessageTypeEnum {
 
-    SYSTEM("SYSTEM", "系统"),
-    USER("USER", "用户"),
-    ASSISTANT("ASSISTANT", "助手");
+    SYSTEM("system", "系统"),
+    USER("user", "用户"),
+    ASSISTANT("assistant", "助手");
 
     private final String code;
 

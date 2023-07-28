@@ -71,7 +71,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "roleId": 1
+  "roleId": 2
 }
 
 ### 查询聊天
@@ -95,13 +95,17 @@ Accept: application/json;charset=utf-8
 Authorization: Bearer {{token}}
 
 ### 聊天
-POST http://127.0.0.1:8081/chat/1/stream
+POST http://127.0.0.1:8081/chat/2/stream
 #Accept: application/json;charset=utf-8
-Accept: application/x-ndjson
+#Accept: application/x-ndjson
 #Accept: text/event-stream
-#Accept: application/stream+json
+Content-Type: application/json
+Accept: application/stream+json
 Authorization: Bearer {{token}}
 
+{
+  "content": "hello"
+}
 
 
 ###

@@ -5,11 +5,13 @@ import com.anii.querydsl.dao.ChatMessageRepository;
 import com.anii.querydsl.dao.ChatRepository;
 import com.anii.querydsl.dao.ChatRoleRepository;
 import com.anii.querydsl.entity.Chat;
+import com.anii.querydsl.entity.ChatMessage;
 import com.anii.querydsl.enums.chat.MessageTypeEnum;
+import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.exception.NotFoundException;
-import com.anii.querydsl.gpt.Completion;
 import com.anii.querydsl.gpt.GPTClient;
 import com.anii.querydsl.gpt.Message;
+import com.anii.querydsl.gpt.exception.GPTException;
 import com.anii.querydsl.mapper.MessageMapper;
 import com.anii.querydsl.request.chat.ChatCreateRequest;
 import com.anii.querydsl.request.chat.ChatMessageRequest;
@@ -24,6 +26,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.anii.querydsl.mapper.ChatMapper.MAPPER;
 
@@ -88,24 +91,39 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
                 .flatMap(username -> repository.findByIdAndUsername(id, username))
                 .cache();
 
-        Flux<Message> commandMessage = chat.flux().map(c ->
-                Message.builder().role(MessageTypeEnum.SYSTEM.getCode())
-                        .content(c.getCommand())
-                        .build()
-        );
-
+        Flux<Message> commandMessage = chat.map(Chat::getCommand).map(Message::ofSystemContent).flux();
         Flux<Message> chatMessages = chat.flatMapMany(c -> messageRepository.findAllByChatIdLimit(c.getId(), c.getContextNum()))
                 .map(MessageMapper.MAPPER::toMessage);
-
-        Flux.concat(commandMessage, chatMessages)
+        Flux<Message> newMessage = Mono.just(req.content()).map(Message::ofUserContent).flux();
+        Flux<String> replays = Flux.concat(commandMessage, chatMessages, newMessage)
                 .collectList()
-                .zipWith(chat, (messages, c) -> {
+                .zipWith(chat, (messages, c) ->
+                        MessageMapper.MAPPER.toCompletion(c, messages)
+                )
+                .flatMapMany(client::chatStream)
+                .onErrorMap(e -> e instanceof GPTException, e -> new BusinessException(e.getMessage(), ((GPTException) e).getCode()))
+                .cache(); // 必须使用cache转化为热源，否则在保存和返回前端时发起多次请求
 
-                })
+        Mono<String> saveUserMessage = Mono.just(req.content())
+                .map(content ->
+                        ChatMessage.builder()
+                                .chatId(id)
+                                .type(MessageTypeEnum.USER)
+                                .content(content)
+                                .build())
+                .flatMap(messageRepository::save)
+                .then(Mono.empty());
+        Mono<String> saveReplayMessage = replays.collect(Collectors.joining(""))
+                .map(c ->
+                        ChatMessage.builder()
+                                .chatId(id)
+                                .content(c)
+                                .type(MessageTypeEnum.ASSISTANT)
+                                .build())
+                .flatMap(messageRepository::save)
+                .then(Mono.empty()); // 采用一个空返回，并连接到返回值，可以保证被spring订阅，从而使用spring security写入的上下文
 
-        return null;
-
-
+        return Flux.concat(replays, saveUserMessage, saveReplayMessage);
     }
 
 }

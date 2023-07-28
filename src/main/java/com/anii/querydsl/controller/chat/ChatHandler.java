@@ -47,7 +47,7 @@ public class ChatHandler {
         Flux<String> messages = RequestUtils.parse(request, ChatMessageRequest.class)
                 .flatMapMany(req -> chatService.chatStream(id, req));
         return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_NDJSON)
+                .contentType(MediaType.APPLICATION_STREAM_JSON)
                 .body(messages, String.class);
     }
 

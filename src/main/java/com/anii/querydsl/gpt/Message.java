@@ -1,5 +1,6 @@
 package com.anii.querydsl.gpt;
 
+import com.anii.querydsl.enums.chat.MessageTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,12 @@ public class Message {
 
     @JsonProperty("function_all")
     private String functionAll;
+
+    public static Message ofUserContent(String content) {
+        return new Message(MessageTypeEnum.USER.getCode(), content, null, null);
+    }
+
+    public static Message ofSystemContent(String content) {
+        return new Message(MessageTypeEnum.SYSTEM.getCode(), content, null, null);
+    }
 }
