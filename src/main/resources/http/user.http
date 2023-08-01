@@ -7,6 +7,9 @@ Content-Type: application/json
   "password": "1212"
 }
 
+### 注册
+GET http://127.0.0.1:8081/auth/
+
 ### 登录
 POST http://127.0.0.1:8081/auth/login
 Accept: application/json;charset=utf-8
