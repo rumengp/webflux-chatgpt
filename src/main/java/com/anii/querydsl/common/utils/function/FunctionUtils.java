@@ -40,7 +40,7 @@ public class FunctionUtils {
     public static Collector<Object, ?, String> jsonJoining() {
         return Collectors.mapping(str -> {
                     if (str instanceof String) {
-                        return "'" + str + "'";
+                        return "\"" + str + "\"";
                     }
                     return str.toString();
                 },

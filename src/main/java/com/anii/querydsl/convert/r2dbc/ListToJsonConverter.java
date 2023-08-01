@@ -1,25 +1,24 @@
 package com.anii.querydsl.convert.r2dbc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import com.anii.querydsl.common.utils.function.FunctionUtils;
+import io.r2dbc.postgresql.codec.Json;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
 @WritingConverter
-@RequiredArgsConstructor
-public class ListToJsonConverter implements Converter<List<String>, String> {
+public enum ListToJsonConverter implements Converter<List, Json> {
 
-    private final ObjectMapper objectMapper;
+    INSTANCE;
 
     @Override
-    public String convert(List<String> source) {
-        try {
-            return objectMapper.writeValueAsString(source);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    @NonNull
+    public Json convert(List source) {
+        Object collect = source.stream()
+                .collect(FunctionUtils.jsonJoining());
+
+        return Json.of(collect.toString());
     }
 }

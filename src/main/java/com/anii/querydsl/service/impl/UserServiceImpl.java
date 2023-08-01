@@ -5,6 +5,7 @@ import com.anii.querydsl.config.jwt.JwtTokenProvider;
 import com.anii.querydsl.dao.UserRepository;
 import com.anii.querydsl.entity.QUser;
 import com.anii.querydsl.entity.User;
+import com.anii.querydsl.enums.system.SystemRoleEnum;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.request.AuthRequest;
 import com.anii.querydsl.request.UserRegisterReq;
@@ -44,6 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> imp
                 .then(Mono.defer(() -> Mono.just(userReq)))
                 .map(USER_MAPPER::toDo)
                 .doOnNext(user -> user.setPassword(encoder.encode(user.getPassword()))) // 加密
+                .doOnNext(user -> user.setRoles(List.of(SystemRoleEnum.USER.name())))
                 .flatMap(repository::save);
     }
 

@@ -3,7 +3,7 @@ POST http://127.0.0.1:8081/auth/register
 Content-Type: application/json
 
 {
-  "username": "anii",
+  "username": "anii6",
   "password": "1212"
 }
 

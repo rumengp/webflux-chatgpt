@@ -29,8 +29,8 @@ public class R2DBCConfig {
     public R2dbcCustomConversions r2dbcCustomConversions(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
         var dialect = DialectResolver.getDialect(connectionFactory);
         var converters = List.of(
-                new ListToJsonConverter(objectMapper),
-                new JsonToListConverter(objectMapper)
+                JsonToListConverter.INSTANCE,
+                ListToJsonConverter.INSTANCE
         );
         return R2dbcCustomConversions.of(dialect, converters);
     }
