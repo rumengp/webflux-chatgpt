@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user`
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`
 (
     `id`          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'id',
     `username`    VARCHAR(64)  NOT NULL COMMENT '用户',
