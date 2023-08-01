@@ -11,12 +11,15 @@ spring:
   webflux:
     format:
       date: yyyy-MM-dd
-      date-time: yyyy-MM-dd mm:ss
+      date-time: yyyy-MM-dd HH:mm:ss
       time: HH:mm:ss
+  jackson:
+    date-format: yyyy-MM-dd
   main:
     allow-bean-definition-overriding: true
   codec:
     max-in-memory-size: 10MB
+
 logging:
   level:
     root: info

@@ -1,5 +1,6 @@
 package com.anii.querydsl.entity;
 
+import com.anii.querydsl.enums.system.UserStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class User implements Serializable {
     @JsonIgnore
     private String password;
 
-    private Boolean enabled;
+    private UserStatusEnum status;
 
     private List<String> roles;
 

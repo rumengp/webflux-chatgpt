@@ -7,7 +7,7 @@ Content-Type: application/json
   "password": "1212"
 }
 
-### 注册
+### 用户列表
 GET http://127.0.0.1:8081/auth/
 
 ### 登录
