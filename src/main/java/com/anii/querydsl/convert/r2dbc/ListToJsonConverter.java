@@ -1,4 +1,4 @@
-package com.anii.querydsl.convert;
+package com.anii.querydsl.convert.r2dbc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

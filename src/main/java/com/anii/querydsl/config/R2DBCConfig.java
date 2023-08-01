@@ -1,8 +1,8 @@
 package com.anii.querydsl.config;
 
 import com.anii.querydsl.common.utils.UserContextHolder;
-import com.anii.querydsl.convert.JsonToListConverter;
-import com.anii.querydsl.convert.ListToJsonConverter;
+import com.anii.querydsl.convert.r2dbc.JsonToListConverter;
+import com.anii.querydsl.convert.r2dbc.ListToJsonConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;

@@ -14,7 +14,7 @@ spring:
       date-time: yyyy-MM-dd HH:mm:ss
       time: HH:mm:ss
   jackson:
-    date-format: yyyy-MM-dd
+    date-format: yyyy-MM-dd HH:mm:ss
   main:
     allow-bean-definition-overriding: true
   codec:
