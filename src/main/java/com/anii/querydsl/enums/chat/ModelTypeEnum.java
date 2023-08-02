@@ -1,11 +1,12 @@
 package com.anii.querydsl.enums.chat;
 
+import com.anii.querydsl.enums.IBaseEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ModelTypeEnum {
+public enum ModelTypeEnum implements IBaseEnum {
 
     GPT_35_TURBO("gpt-3.5-turbo", "GPT_35_TURBO"),
     GPT_35_TURBO_0613("gpt-3.5-turbo-0613", "GPT_35_TURBO_0613"),

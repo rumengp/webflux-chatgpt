@@ -1,11 +1,12 @@
 package com.anii.querydsl.enums.chat;
 
+import com.anii.querydsl.enums.IBaseEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ChatRoleTypeEnum {
+public enum ChatRoleTypeEnum implements IBaseEnum {
 
     USER("user", "用户角色"),
     SYSTEM("system", "系统内置角色"),
