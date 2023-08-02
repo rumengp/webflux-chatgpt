@@ -16,12 +16,8 @@
     <properties>
         <java.version>17</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <lombok.version>1.18.28</lombok.version>
         <binding.version>0.2.0</binding.version>
         <collections4.version>4.4</collections4.version>
-        <lang3.version>3.12.0</lang3.version>
-        <r2dbc.mysql.version>1.0.2</r2dbc.mysql.version>
-        <r2dbc.pg.version>1.0.2.RELEASE</r2dbc.pg.version>
         <jjwt.version>0.11.5</jjwt.version>
         <querydsl.version>5.0.0</querydsl.version>
         <infobip-spring-data-r2dbc-querydsl.version>8.1.2</infobip-spring-data-r2dbc-querydsl.version>
@@ -61,7 +57,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${lang3.version}</version>
         </dependency>
 
         <dependency>
@@ -73,7 +68,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
-            <version>${r2dbc.pg.version}</version>
         </dependency>
 
         <dependency>
@@ -127,7 +121,6 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
         </dependency>
     </dependencies>
 
@@ -149,7 +142,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>17</source>
                     <target>17</target>
@@ -186,7 +179,9 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/generated-sources/java</outputDirectory>
-                            <processor>com.infobip.spring.data.jdbc.annotation.processor.SpringDataJdbcAnnotationProcessor</processor>
+                            <processor>
+                                com.infobip.spring.data.jdbc.annotation.processor.SpringDataJdbcAnnotationProcessor
+                            </processor>
                         </configuration>
                     </execution>
                 </executions>
