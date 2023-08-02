@@ -29,3 +29,8 @@ gpt:
   proxy:
     enable: true
   token: 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
+
+minio:
+  access-key: lXjqJfLL142i3o4rmvPh
+  secret-key: o2Pico4MmJCBkk7Fvju3c11m5Mm6JiUC3OLUyeJV
+  endpoint: http://124.70.38.253:9000

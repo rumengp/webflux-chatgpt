@@ -19,6 +19,7 @@
         <binding.version>0.2.0</binding.version>
         <collections4.version>4.4</collections4.version>
         <jjwt.version>0.11.5</jjwt.version>
+        <minio.version>8.5.4</minio.version>
         <querydsl.version>5.0.0</querydsl.version>
         <infobip-spring-data-r2dbc-querydsl.version>8.1.2</infobip-spring-data-r2dbc-querydsl.version>
     </properties>
@@ -121,6 +122,12 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
         </dependency>
     </dependencies>
 
