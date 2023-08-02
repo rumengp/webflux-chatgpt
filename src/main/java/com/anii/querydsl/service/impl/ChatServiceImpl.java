@@ -20,6 +20,7 @@ import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,9 +42,11 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     private final GPTClient client;
 
     @Override
+    @Transactional
     public Mono<Void> deleteById(Long id) {
         return Mono.just(id)
                 .zipWith(UserContextHolder.getUsername(), repository::deleteByIdAndUsername)
+                .then(messageRepository.deleteByChatId(id))
                 .then();
     }
 
