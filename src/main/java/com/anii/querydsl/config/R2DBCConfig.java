@@ -1,6 +1,6 @@
 package com.anii.querydsl.config;
 
-import com.anii.querydsl.common.utils.UserContextHolder;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.convert.r2dbc.ImagePropertyToJsonConverter;
 import com.anii.querydsl.convert.r2dbc.JsonToImagePropertyConverter;
 import com.anii.querydsl.convert.r2dbc.JsonToListConverter;

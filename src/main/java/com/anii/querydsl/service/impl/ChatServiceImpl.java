@@ -1,6 +1,6 @@
 package com.anii.querydsl.service.impl;
 
-import com.anii.querydsl.common.utils.UserContextHolder;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.dao.ChatMessageRepository;
 import com.anii.querydsl.dao.ChatRepository;
 import com.anii.querydsl.dao.ChatRoleRepository;

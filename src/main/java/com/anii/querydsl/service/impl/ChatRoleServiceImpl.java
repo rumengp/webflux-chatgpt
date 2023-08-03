@@ -1,7 +1,7 @@
 package com.anii.querydsl.service.impl;
 
 import com.anii.querydsl.common.BusinessConstantEnum;
-import com.anii.querydsl.common.utils.UserContextHolder;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.dao.ChatRoleRepository;
 import com.anii.querydsl.entity.ChatRole;
 import com.anii.querydsl.enums.chat.ChatRoleTypeEnum;

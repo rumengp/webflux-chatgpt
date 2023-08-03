@@ -1,6 +1,5 @@
-package com.anii.querydsl.common.utils;
+package com.anii.querydsl.common;
 
-import com.anii.querydsl.common.UserContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
