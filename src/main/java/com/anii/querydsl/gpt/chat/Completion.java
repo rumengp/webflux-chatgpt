@@ -1,4 +1,4 @@
-package com.anii.querydsl.gpt;
+package com.anii.querydsl.gpt.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

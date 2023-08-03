@@ -2,10 +2,10 @@ package com.anii.querydsl;
 
 import com.anii.querydsl.entity.User;
 import com.anii.querydsl.enums.chat.ModelTypeEnum;
-import com.anii.querydsl.gpt.Completion;
+import com.anii.querydsl.gpt.chat.Completion;
 import com.anii.querydsl.gpt.DefaultGPTClient;
 import com.anii.querydsl.gpt.GPTClient;
-import com.anii.querydsl.gpt.Message;
+import com.anii.querydsl.gpt.chat.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

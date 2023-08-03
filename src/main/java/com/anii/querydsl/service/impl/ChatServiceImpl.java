@@ -10,7 +10,7 @@ import com.anii.querydsl.enums.chat.MessageTypeEnum;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.exception.NotFoundException;
 import com.anii.querydsl.gpt.GPTClient;
-import com.anii.querydsl.gpt.Message;
+import com.anii.querydsl.gpt.chat.Message;
 import com.anii.querydsl.gpt.exception.GPTException;
 import com.anii.querydsl.mapper.MessageMapper;
 import com.anii.querydsl.request.chat.ChatCreateRequest;

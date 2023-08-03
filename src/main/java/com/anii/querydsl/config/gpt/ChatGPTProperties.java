@@ -1,4 +1,4 @@
-package com.anii.querydsl.gpt;
+package com.anii.querydsl.config.gpt;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

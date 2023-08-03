@@ -2,8 +2,8 @@ package com.anii.querydsl.mapper;
 
 import com.anii.querydsl.entity.Chat;
 import com.anii.querydsl.entity.ChatMessage;
-import com.anii.querydsl.gpt.Completion;
-import com.anii.querydsl.gpt.Message;
+import com.anii.querydsl.gpt.chat.Completion;
+import com.anii.querydsl.gpt.chat.Message;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

@@ -1,4 +1,4 @@
-package com.anii.querydsl.gpt;
+package com.anii.querydsl.gpt.chat;
 
 public record Usage(
         Long promptTokens,

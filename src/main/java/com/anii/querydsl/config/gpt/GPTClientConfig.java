@@ -1,9 +1,10 @@
-package com.anii.querydsl.config;
+package com.anii.querydsl.config.gpt;
 
-import com.anii.querydsl.gpt.ChatGPTProperties;
+import com.anii.querydsl.config.gpt.ChatGPTProperties;
 import com.anii.querydsl.gpt.DefaultGPTClient;
 import com.anii.querydsl.gpt.GPTClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +19,9 @@ import reactor.netty.transport.ProxyProvider;
 @Slf4j
 public class GPTClientConfig {
 
-    @Bean
-    public GPTClient gptClient(ChatGPTProperties properties,
-                               WebClient.Builder builder) throws InterruptedException {
-
+    @Bean(name = "gptWebClient")
+    public WebClient gptWebClient(ChatGPTProperties properties,
+                                  WebClient.Builder builder) {
         builder = builder.baseUrl(properties.getHost())
                 .filter(logRequest())
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + properties.getToken());
@@ -34,8 +34,13 @@ public class GPTClientConfig {
                     .port(properties.getProxy().getPort()));
         }
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
-        WebClient client = builder.clientConnector(connector).build();
+        WebClient webClient = builder.clientConnector(connector).build();
+        return webClient;
+    }
 
+    @Bean
+    @Qualifier("gptWebClient")
+    public GPTClient gptClient(WebClient client) {
         return new DefaultGPTClient(client);
     }
 
@@ -47,5 +52,4 @@ public class GPTClientConfig {
             return Mono.just(clientRequest);
         });
     }
-
 }

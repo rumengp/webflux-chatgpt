@@ -127,3 +127,16 @@ Authorization: Bearer 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
   ]
 }
 
+
+### 生成图片
+POST https://api.openai.com/v1/images/generations
+Content-Type: application/json
+Authorization: Bearer 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
+
+{
+  "prompt": "flowers",
+  "n": 2,
+  "size": "512x512",
+  "response_format": "url"
+}
+

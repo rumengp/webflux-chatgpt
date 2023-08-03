@@ -1,4 +1,4 @@
-package com.anii.querydsl.gpt;
+package com.anii.querydsl.gpt.chat;
 
 import com.anii.querydsl.enums.chat.MessageTypeEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
