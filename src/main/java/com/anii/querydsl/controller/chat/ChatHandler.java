@@ -2,7 +2,6 @@ package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
 import com.anii.querydsl.common.utils.RequestUtils;
-import com.anii.querydsl.gpt.GPTClient;
 import com.anii.querydsl.request.chat.ChatCreateRequest;
 import com.anii.querydsl.request.chat.ChatMessageRequest;
 import com.anii.querydsl.request.chat.ChatUpdateRequest;
@@ -24,8 +23,6 @@ import reactor.core.publisher.Mono;
 public class ChatHandler {
 
     private final IChatService chatService;
-
-    private final GPTClient gptClient;
 
     @Bean("chatRouters")
     public RouterFunction<ServerResponse> functions() {

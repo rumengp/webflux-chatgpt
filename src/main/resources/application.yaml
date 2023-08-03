@@ -17,7 +17,6 @@ spring:
       max-in-memory-size: 10MB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-    property-naming-strategy: SNAKE_CASE
     default-property-inclusion: non_null
   main:
     allow-bean-definition-overriding: true
