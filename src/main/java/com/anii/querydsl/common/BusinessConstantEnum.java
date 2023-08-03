@@ -13,6 +13,7 @@ public enum BusinessConstantEnum {
     RESOURCE_NOT_FOUND("10404", "该资源不存在"),
     MINIO_PUT_OBJECT_ERROR("20500", "文件上传失败"),
     MINIO_GET_OBJECT_ERROR("20501", "文件下载失败"),
+    JSON_PARSE_FAILED("21500", "JSON解析失败"),
     ;
 
     private final String code;

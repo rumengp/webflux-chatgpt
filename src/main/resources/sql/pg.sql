@@ -102,3 +102,25 @@ COMMENT ON COLUMN chat_message.username IS '角色所属的用户名称';
 COMMENT ON COLUMN chat_message.chat_id IS '聊天所属角色';
 COMMENT ON COLUMN chat_message.type IS '消息类型，USER,ASSISTANT';
 COMMENT ON COLUMN chat_message.content IS '聊天内容';
+
+
+-- images
+CREATE TABLE chat_image
+(
+    id           BIGSERIAL PRIMARY KEY,
+    username     VARCHAR(64)   NOT NULL,
+    prompt       VARCHAR(1024) NOT NULL,
+    image_object VARCHAR(64)   NOT NULL,
+    mask_object  VARCHAR(64)   NOT NULL,
+    resp_object  JSONB,
+    property     JSONB,
+    create_time  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_time  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE chat_image IS '生成图片的记录';
+COMMENT ON COLUMN chat_image.prompt IS '提示词';
+COMMENT ON COLUMN chat_image.image_object IS '用户输入的图片保存到minio后的objectname';
+COMMENT ON COLUMN chat_image.mask_object IS '用户输入的图片保存到minio后的objectname';
+COMMENT ON COLUMN chat_image.resp_object IS '模型相应的图片保存到Minio后的objectname, ["name1", "name2"]';
+COMMENT ON COLUMN chat_image.property IS '请求时的配置{"prompt": "str","n": int,"size": "1024x1024", "response_format": "url", "user":""}';

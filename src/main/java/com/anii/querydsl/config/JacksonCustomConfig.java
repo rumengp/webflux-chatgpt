@@ -2,6 +2,8 @@ package com.anii.querydsl.config;
 
 import com.anii.querydsl.convert.web.StringToLocalDateConverter;
 import com.anii.querydsl.convert.web.StringToLocalDateTimeConverter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -16,13 +18,28 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
-public class DateTimeFormatterConfig {
+public class JacksonCustomConfig {
 
     @Value("${spring.webflux.format.date-time:yyyy-MM-dd HH:mm:ss}")
     private String dateTimePattern;
 
     @Value("${spring.webflux.format.date:yyyy-MM-dd}")
     private String datePattern;
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+
+        return jacksonObjectMapperBuilder ->
+                jacksonObjectMapperBuilder
+                        .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                        .serializerByType(LocalDate.class, localDateSerializer())
+                        .serializerByType(LocalDateTime.class, localDateTimeSerializer())
+                        .deserializerByType(LocalDateTime.class, localDateTimeDeserializer())
+                        .deserializerByType(LocalDate.class, localDateDeserializer())
+                        .simpleDateFormat(dateTimePattern)
+                        .serializationInclusion(JsonInclude.Include.NON_NULL)
+                        .indentOutput(false);
+    }
 
     // localDateTime 序列化器
     @Bean
@@ -46,16 +63,6 @@ public class DateTimeFormatterConfig {
         return new LocalDateDeserializer(DateTimeFormatter.ofPattern(datePattern));
     }
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-        return builder -> {
-            builder.serializerByType(LocalDateTime.class, localDateTimeSerializer());
-            builder.serializerByType(LocalDate.class, localDateSerializer());
-            builder.deserializerByType(LocalDateTime.class, localDateTimeDeserializer());
-            builder.deserializerByType(LocalDate.class, localDateDeserializer());
-            builder.simpleDateFormat(dateTimePattern);
-        };
-    }
 
     @Bean
     public StringToLocalDateTimeConverter stringToLocalDateTimeConverter() {

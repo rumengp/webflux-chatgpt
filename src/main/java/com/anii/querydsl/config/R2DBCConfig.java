@@ -1,9 +1,10 @@
 package com.anii.querydsl.config;
 
 import com.anii.querydsl.common.utils.UserContextHolder;
+import com.anii.querydsl.convert.r2dbc.ImagePropertyToJsonConverter;
+import com.anii.querydsl.convert.r2dbc.JsonToImagePropertyConverter;
 import com.anii.querydsl.convert.r2dbc.JsonToListConverter;
 import com.anii.querydsl.convert.r2dbc.ListToJsonConverter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,11 +27,13 @@ public class R2DBCConfig {
     }
 
     @Bean
-    public R2dbcCustomConversions r2dbcCustomConversions(ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+    public R2dbcCustomConversions r2dbcCustomConversions(ConnectionFactory connectionFactory) {
         var dialect = DialectResolver.getDialect(connectionFactory);
         var converters = List.of(
                 JsonToListConverter.INSTANCE,
-                ListToJsonConverter.INSTANCE
+                ListToJsonConverter.INSTANCE,
+                ImagePropertyToJsonConverter.INSTANCE,
+                JsonToImagePropertyConverter.INSTANCE
         );
         return R2dbcCustomConversions.of(dialect, converters);
     }
