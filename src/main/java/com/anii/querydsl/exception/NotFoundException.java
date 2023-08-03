@@ -1,14 +1,14 @@
 package com.anii.querydsl.exception;
 
-import com.anii.querydsl.common.BusinessConstant;
+import com.anii.querydsl.common.BusinessConstantEnum;
 
 public class NotFoundException extends BusinessException {
 
     public NotFoundException() {
-        super(BusinessConstant.RESOURCE_NOT_FOUND, BusinessConstant.RESOURCE_NOT_FOUND_CODE);
+        super(BusinessConstantEnum.RESOURCE_NOT_FOUND);
     }
 
     public NotFoundException(Throwable cause) {
-        super(BusinessConstant.RESOURCE_NOT_FOUND, BusinessConstant.RESOURCE_NOT_FOUND_CODE, cause);
+        super(BusinessConstantEnum.RESOURCE_NOT_FOUND, cause);
     }
 }

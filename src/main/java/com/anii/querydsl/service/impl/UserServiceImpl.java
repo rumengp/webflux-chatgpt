@@ -1,6 +1,6 @@
 package com.anii.querydsl.service.impl;
 
-import com.anii.querydsl.common.BusinessConstant;
+import com.anii.querydsl.common.BusinessConstantEnum;
 import com.anii.querydsl.config.jwt.JwtTokenProvider;
 import com.anii.querydsl.dao.UserRepository;
 import com.anii.querydsl.entity.QUser;
@@ -40,7 +40,7 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> imp
     public Mono<User> register(UserRegisterReq userReq) {
         return repository.existsByUsername(userReq.username())
                 .filter(Boolean.FALSE::equals) // 判断是否存在，如果存在则为空，然后会报错
-                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.USERNAME_EXIST, BusinessConstant.USERNAME_EXIST_CODE)))
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstantEnum.USERNAME_EXIST)))
                 .checkpoint()
                 .then(Mono.defer(() -> Mono.just(userReq)))
                 .map(USER_MAPPER::toDo)
@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User, Long> imp
     public Mono<String> login(AuthRequest authRequest) {
         return this.authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()))
-                .onErrorMap(ex -> new BusinessException(BusinessConstant.AUTH_ERROR, BusinessConstant.AUTH_ERROR_CODE, ex))
+                .onErrorMap(ex -> new BusinessException(BusinessConstantEnum.AUTH_ERROR, ex))
                 .zipWith(repository.findByUsername(authRequest.username()).map(USER_MAPPER::toContext), (auth, user) -> {
                     if (auth instanceof AbstractAuthenticationToken t) {
                         t.setDetails(user);

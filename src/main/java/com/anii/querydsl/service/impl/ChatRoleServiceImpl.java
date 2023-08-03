@@ -1,6 +1,6 @@
 package com.anii.querydsl.service.impl;
 
-import com.anii.querydsl.common.BusinessConstant;
+import com.anii.querydsl.common.BusinessConstantEnum;
 import com.anii.querydsl.common.utils.UserContextHolder;
 import com.anii.querydsl.dao.ChatRoleRepository;
 import com.anii.querydsl.entity.ChatRole;
@@ -73,7 +73,7 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
         return UserContextHolder.getUsername()
                 .flatMap(username -> repository.existsByUsernameAndNickName(username, nickName))
                 .filter(Boolean.FALSE::equals)
-                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstantEnum.RESOURCE_NAME_EXISTS)))
                 .then();
     }
 
@@ -81,7 +81,7 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
         return UserContextHolder.getUsername()
                 .flatMap(username -> repository.existsByUsernameAndNickNameAndIdNot(username, nickName, id))
                 .filter(Boolean.FALSE::equals)
-                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstant.RESOURCE_NAME_EXISTS, BusinessConstant.RESOURCE_NAME_EXISTS_CODE)))
+                .switchIfEmpty(Mono.error(() -> new BusinessException(BusinessConstantEnum.RESOURCE_NAME_EXISTS)))
                 .then();
     }
 
