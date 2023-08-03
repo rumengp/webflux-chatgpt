@@ -13,8 +13,12 @@ spring:
       date: yyyy-MM-dd
       date-time: yyyy-MM-dd HH:mm:ss
       time: HH:mm:ss
+    multipart:
+      max-in-memory-size: 10MB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
   main:
     allow-bean-definition-overriding: true
   codec:

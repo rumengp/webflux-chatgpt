@@ -2,8 +2,6 @@ package com.anii.querydsl.config;
 
 import com.anii.querydsl.convert.web.StringToLocalDateConverter;
 import com.anii.querydsl.convert.web.StringToLocalDateTimeConverter;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -31,14 +29,10 @@ public class JacksonCustomConfig {
 
         return jacksonObjectMapperBuilder ->
                 jacksonObjectMapperBuilder
-                        .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                         .serializerByType(LocalDate.class, localDateSerializer())
                         .serializerByType(LocalDateTime.class, localDateTimeSerializer())
                         .deserializerByType(LocalDateTime.class, localDateTimeDeserializer())
-                        .deserializerByType(LocalDate.class, localDateDeserializer())
-                        .simpleDateFormat(dateTimePattern)
-                        .serializationInclusion(JsonInclude.Include.NON_NULL)
-                        .indentOutput(false);
+                        .deserializerByType(LocalDate.class, localDateDeserializer());
     }
 
     // localDateTime 序列化器
