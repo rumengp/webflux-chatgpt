@@ -1,7 +1,6 @@
 package com.anii.querydsl.common.utils;
 
 import com.anii.querydsl.exception.ValidException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +19,11 @@ import java.util.Map;
 @Slf4j
 public class RequestUtils {
 
-    private static ObjectMapper objectMapper;
     private static Validator validator;
 
     @Autowired
     public void setValidator(Validator val) {
         validator = val;
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper mapper) {
-        objectMapper = mapper;
     }
 
     public static <T> Mono<T> parse(ServerRequest serverRequest, Class<T> clazz) {
@@ -53,8 +46,8 @@ public class RequestUtils {
     private static <T> Mono<T> GET(ServerRequest request, Class<T> clazz, Boolean needValid, Class... groups) {
         Map<String, String> queryParams = request.queryParams().toSingleValueMap();
         try {
-            String json = objectMapper.writeValueAsString(queryParams);
-            Mono<T> mono = Mono.just(objectMapper.readValue(json, clazz));
+            String json = JSONUtils.toJsonString(queryParams);
+            Mono<T> mono = Mono.just(JSONUtils.parseObject(json));
             if (needValid) {
                 mono = mono.doOnNext(t -> valid(t, groups));
             }
