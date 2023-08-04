@@ -43,10 +43,10 @@ public final class JSONUtils {
 
 
     public static <T> List<T> parseList(String json) {
-
         if (StringUtils.isBlank(json)) {
             return Collections.emptyList();
         }
+
         try {
             return MAPPER.readValue(json, new TypeReference<>() {
             });

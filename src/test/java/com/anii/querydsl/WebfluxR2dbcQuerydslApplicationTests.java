@@ -2,9 +2,8 @@ package com.anii.querydsl;
 
 import com.anii.querydsl.entity.User;
 import com.anii.querydsl.enums.chat.ModelTypeEnum;
-import com.anii.querydsl.gpt.chat.Completion;
-import com.anii.querydsl.gpt.DefaultGPTClient;
 import com.anii.querydsl.gpt.GPTClient;
+import com.anii.querydsl.gpt.chat.Completion;
 import com.anii.querydsl.gpt.chat.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +46,6 @@ class WebfluxR2dbcQuerydslApplicationTests {
         Method declaredMethod = aClass.getDeclaredMethod(implMethodName);
         Annotation[] annotations = declaredMethod.getAnnotations();
 
-    }
-
-    @Test
-    public void testGetYoutube() throws InterruptedException {
-        if (client instanceof DefaultGPTClient w) {
-            w.getWebClient()
-                    .get()
-                    .uri("https://www.youtube.com")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .subscribe(System.out::println);
-            Thread.currentThread().join();
-        }
     }
 
     @Test

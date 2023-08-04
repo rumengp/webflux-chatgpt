@@ -11,7 +11,7 @@ public interface IMinioService {
 
     Mono<Boolean> bucketExists(String bucketName);
 
-    Mono<Void> putObject(String bucketName, String objectName, InputStream is, Long size);
+    Mono<String> putObject(String bucketName, String objectName, InputStream is, Long size);
 
     Mono<InputStream> getObject(String bucketName, String objectName);
 }

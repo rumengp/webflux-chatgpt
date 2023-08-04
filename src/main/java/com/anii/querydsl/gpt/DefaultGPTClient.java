@@ -44,6 +44,10 @@ public class DefaultGPTClient implements GPTClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(completion)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, resp ->
+                        resp.bodyToMono(GPTErrorBody.class)
+                                .map(GPTException::ofResponse)
+                )
                 .bodyToFlux(Response.class)
                 .takeWhile(c -> c.choices().get(0).finishReason() == null)
                 .map(c -> c.choices().get(0).delta().getContent())
@@ -68,28 +72,20 @@ public class DefaultGPTClient implements GPTClient {
     }
 
     @Override
-    public Flux<byte[]> createImageB64Json(ImageRequest request) {
+    public Flux<String> createImageB64Json(ImageRequest request) {
         request.setResponseFormat(FORMAT_B64_JSON);
-        return webClient
-                .post()
-                .uri(IMAGE_CREATE_PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, resp ->
-                        resp.bodyToMono(GPTErrorBody.class)
-                                .map(GPTException::ofResponse)
-                )
-                .bodyToMono(ImageResponse.class)
-                .map(ImageResponse::data)
-                .flatMapMany(Flux::fromIterable)
-                .map(ImageData::b64Json)
-                .map(decoder::decode);
+        return postImage(request)
+                .map(ImageData::b64Json);
     }
 
     @Override
     public Flux<String> createImageUrl(ImageRequest request) {
         request.setResponseFormat(FORMAT_URL);
+        return postImage(request)
+                .map(ImageData::url);
+    }
+
+    private Flux<ImageData> postImage(ImageRequest request) {
         return webClient
                 .post()
                 .uri(IMAGE_CREATE_PATH)
@@ -102,7 +98,7 @@ public class DefaultGPTClient implements GPTClient {
                 )
                 .bodyToMono(ImageResponse.class)
                 .map(ImageResponse::data)
-                .flatMapMany(Flux::fromIterable)
-                .map(ImageData::url);
+                .flatMapMany(Flux::fromIterable);
     }
+
 }

@@ -22,8 +22,8 @@ public record CommonResult<T>(T data, String message, String code) {
     public static <T> Mono<ServerResponse> ok(Flux<T> data) {
         Flux<CommonResult<T>> mapped = data.map(d -> new CommonResult<>(d, SUCCESS_MESSAGE, SUCCESS_CODE));
         return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(mapped, new ParameterizedTypeReference<CommonResult<T>>() {
+                .contentType(MediaType.APPLICATION_STREAM_JSON)
+                .body(mapped, new ParameterizedTypeReference<>() {
                 });
     }
 

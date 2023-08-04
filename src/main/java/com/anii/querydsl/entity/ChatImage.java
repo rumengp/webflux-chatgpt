@@ -32,6 +32,8 @@ public class ChatImage {
 
     private List<String> respObject;
 
+    private Property property;
+
     @Data
     public static class Property implements Serializable {
 

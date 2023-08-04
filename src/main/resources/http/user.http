@@ -140,3 +140,15 @@ Authorization: Bearer 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
   "response_format": "url"
 }
 
+### 生成图片
+POST 127.0.0.1:8081/chat/image/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "prompt": "flowers",
+  "n": 2,
+  "size": "256x256",
+  "responseFormat": "b64_json"
+}
+

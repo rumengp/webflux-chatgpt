@@ -54,21 +54,22 @@ public class MinioServiceImpl implements IMinioService {
     }
 
     @Override
-    public Mono<Void> putObject(String bucketName, String objectName, InputStream is, Long size) {
+    public Mono<String> putObject(String bucketName, String objectName, InputStream is, Long size) {
         return Mono.fromFuture(() -> {
-            try {
-                return minioAsyncClient.putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(objectName)
-                                .stream(is, size, -1)
-                                .build()
-                );
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                throw new BusinessException(BusinessConstantEnum.MINIO_PUT_OBJECT_ERROR);
-            }
-        }).then();
+                    try {
+                        return minioAsyncClient.putObject(
+                                PutObjectArgs.builder()
+                                        .bucket(bucketName)
+                                        .object(objectName)
+                                        .stream(is, size, -1)
+                                        .build()
+                        );
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        throw new BusinessException(BusinessConstantEnum.MINIO_PUT_OBJECT_ERROR);
+                    }
+                })
+                .map(objectWriteResponse -> objectWriteResponse.object());
     }
 
     @Override

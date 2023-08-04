@@ -5,9 +5,6 @@ spring:
     url: r2dbc:postgresql://123.57.3.222:5432/chat_gpt
     username: postgres
     password: 1212
-  #    url: r2dbc:mysql://192.168.74.128:3306/querydsl
-  #    username: root
-  #    password: 1212
   webflux:
     format:
       date: yyyy-MM-dd
@@ -37,3 +34,6 @@ minio:
   access-key: lXjqJfLL142i3o4rmvPh
   secret-key: o2Pico4MmJCBkk7Fvju3c11m5Mm6JiUC3OLUyeJV
   endpoint: http://124.70.38.253:9000
+  gpt:
+    bucket: gpt-images
+    image-prefix: images
