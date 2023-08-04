@@ -15,15 +15,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public class DefaultGPTClient implements GPTClient {
 
     private static final String CHAT_PATH = "/v1/chat/completions";
 
     private static final String IMAGE_CREATE_PATH = "/v1/images/generations";
-
-    private static final Base64.Decoder decoder = Base64.getDecoder();
 
     private static final String FORMAT_B64_JSON = "b64_json";
 
