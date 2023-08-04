@@ -1,6 +1,7 @@
 package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.request.chat.image.ChatImageCreateRequest;
 import com.anii.querydsl.service.IChatImageService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Function;
 
 @Component
 @Slf4j
@@ -37,7 +40,8 @@ public class ChatImageHandler {
 
     private Mono<ServerResponse> createImagePrompt(ServerRequest serverRequest) {
         Flux<String> stringFlux = serverRequest.bodyToMono(ChatImageCreateRequest.class)
-                .flatMapMany(chatImageService::createImage);
+                .zipWith(UserContextHolder.getUsername(), chatImageService::createImage)
+                .flatMapMany(Function.identity());
 
         return CommonResult.ok(stringFlux);
     }
