@@ -21,6 +21,7 @@
         <jjwt.version>0.11.5</jjwt.version>
         <minio.version>8.5.4</minio.version>
         <querydsl.version>5.0.0</querydsl.version>
+        <commons-io.version>2.13.0</commons-io.version>
         <infobip-spring-data-r2dbc-querydsl.version>8.1.2</infobip-spring-data-r2dbc-querydsl.version>
     </properties>
     <dependencies>
@@ -58,6 +59,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
 
         <dependency>

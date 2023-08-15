@@ -74,7 +74,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "roleId": 2
+  "roleId": 1
 }
 
 ### 查询聊天
@@ -98,7 +98,7 @@ Accept: application/json;charset=utf-8
 Authorization: Bearer {{token}}
 
 ### 聊天
-POST http://127.0.0.1:8081/chat/2/stream
+POST http://127.0.0.1:8081/chat/1/stream
 #Accept: application/json;charset=utf-8
 #Accept: application/x-ndjson
 #Accept: text/event-stream
@@ -151,4 +151,15 @@ Authorization: Bearer {{token}}
   "size": "256x256",
   "responseFormat": "b64_json"
 }
+
+###
+POST 127.0.0.1:8081/chat/image/rollout
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "preImageId": 0,
+  "num": 5
+}
+
 

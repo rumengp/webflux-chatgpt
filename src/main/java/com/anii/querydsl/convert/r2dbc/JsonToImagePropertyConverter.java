@@ -13,6 +13,6 @@ public enum JsonToImagePropertyConverter implements Converter<Json, ChatImage.Pr
 
     @Override
     public ChatImage.Property convert(Json source) {
-        return JSONUtils.parseObject(source.asString());
+        return JSONUtils.parseObject(source.asString(), ChatImage.Property.class);
     }
 }

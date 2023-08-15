@@ -1,26 +1,27 @@
 package com.anii.querydsl.service.impl;
 
 import com.anii.querydsl.common.BusinessConstantEnum;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.dao.ChatImageRepository;
 import com.anii.querydsl.entity.ChatImage;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.gpt.GPTClient;
 import com.anii.querydsl.gpt.image.ImageRequest;
 import com.anii.querydsl.request.chat.image.ChatImageCreateRequest;
+import com.anii.querydsl.request.chat.image.ChatImageRolloutDTO;
 import com.anii.querydsl.service.IChatImageService;
 import com.anii.querydsl.service.IMinioService;
+import com.anii.querydsl.vo.ChatImageVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
@@ -58,7 +59,9 @@ public class ChatImageServiceImpl extends ServiceImpl<ChatImageRepository, ChatI
         Flux<String> objectNamesFlux = Flux.fromStream(objectNames).cache();
 
         // 将结果存入minio
-        imageB64Json.zipWith(objectNamesFlux, this::saveImageWithObjectName)
+        imageB64Json
+                .map(String::getBytes)
+                .zipWith(objectNamesFlux, (bytes, objectName) -> minioService.putObject(bucketName, objectName, bytes))
                 .onErrorMap(ex -> new BusinessException(BusinessConstantEnum.MINIO_PUT_OBJECT_ERROR, ex))
                 .subscribeOn(Schedulers.boundedElastic())
                 .subscribe();
@@ -72,11 +75,45 @@ public class ChatImageServiceImpl extends ServiceImpl<ChatImageRepository, ChatI
         return Flux.concat(imageB64Json, saveDb);
     }
 
-    private Mono<Void> saveImageWithObjectName(String imageBase64, String objectName) {
-        byte[] bytes = imageBase64.getBytes(StandardCharsets.UTF_8);
-        return Mono.using(() -> new ByteArrayInputStream(bytes),
-                is -> minioService.putObject(bucketName, objectName, is, Integer.toUnsignedLong(bytes.length)),
-                IOUtils::closeQuietly
-        ).then();
+    @Override
+    public Flux<ChatImageVo> rolloutImageList(ChatImageRolloutDTO request) {
+        // 按照上一个图片的id进行查找
+        Flux<ChatImage> images = UserContextHolder.getUsername()
+                .flatMapMany(username -> repository.findAllRollout(username, request.preImageId(), request.num()))
+                .cache();
+
+        // 按照查出的信息从minio拉取数据
+        return images.flatMap(image -> {
+            Flux<ChatImageVo> prompt = Flux.just(image.getPrompt())
+                    .map(objectName -> ChatImageVo.builder()
+                            .id(image.getId())
+                            .type(ChatImageVo.ChatImageVoTypeEnum.PROMPT)
+                            .content(image.getPrompt())
+                            .build()
+                    );
+
+            Flux<ChatImageVo> userImages = Flux.just(image.getImageObject(), image.getMaskObject())
+                    .filter(StringUtils::isNotBlank)
+                    .flatMap(objectName -> minioService.getB64Image(bucketName, objectName))
+                    .map(objectName ->
+                            ChatImageVo.builder()
+                                    .id(image.getId())
+                                    .type(ChatImageVo.ChatImageVoTypeEnum.USER_IMAGE)
+                                    .content(objectName)
+                                    .build()
+                    );
+
+            Flux<ChatImageVo> respImages = Flux.fromIterable(image.getRespObject())
+                    .flatMap(objectName -> minioService.getB64Image(bucketName, objectName))
+                    .map(objectName ->
+                            ChatImageVo.builder()
+                                    .id(image.getId())
+                                    .type(ChatImageVo.ChatImageVoTypeEnum.RESP_IMAGE)
+                                    .content(objectName)
+                                    .build()
+                    );
+
+            return Flux.concat(prompt, userImages, respImages);
+        });
     }
 }

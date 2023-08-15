@@ -16,20 +16,11 @@ import java.util.Objects;
 @Component
 public final class JSONUtils {
 
-    private static ObjectMapper MAPPER;
+    private static ObjectMapper MAPPER = new ObjectMapper();
 
     @Autowired
     public void setGlobalMapper(ObjectMapper objectMapper) {
         MAPPER = objectMapper;
-    }
-
-    public static <T> T parseObject(String json) {
-        try {
-            return MAPPER.readValue(json, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
-        }
     }
 
     /**
@@ -38,25 +29,31 @@ public final class JSONUtils {
      * @param clazz 泛型推导帮助类
      */
     public static <T> T parseObject(String json, Class<T> clazz) {
-        return parseObject(json);
+        try {
+            return MAPPER.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
+        }
     }
 
-
-    public static <T> List<T> parseList(String json) {
-        if (StringUtils.isBlank(json)) {
-            return Collections.emptyList();
-        }
-
+    public static <T> T parseObject(String json, TypeReference<T> typeReference) {
         try {
-            return MAPPER.readValue(json, new TypeReference<>() {
-            });
+            return MAPPER.readValue(json, typeReference);
         } catch (JsonProcessingException e) {
             throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
         }
     }
 
     public static <T> List<T> parseList(String json, Class<T> clazz) {
-        return parseList(json);
+        if (StringUtils.isBlank(json)) {
+            return Collections.emptyList();
+        }
+
+        try {
+            return MAPPER.readValue(json, MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
+        }
     }
 
     public static <T> String toJsonString(T object) {

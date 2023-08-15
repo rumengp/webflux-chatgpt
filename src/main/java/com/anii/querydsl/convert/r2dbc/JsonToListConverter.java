@@ -9,13 +9,13 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 
 @ReadingConverter
-public enum JsonToListConverter implements Converter<Json, List> {
+public enum JsonToListConverter implements Converter<Json, List<String>> {
 
     INSTANCE;
 
     @Override
     @NonNull
-    public List convert(Json source) {
-        return JSONUtils.parseList(source.asString());
+    public List<String> convert(Json source) {
+        return JSONUtils.parseList(source.asString(), String.class);
     }
 }

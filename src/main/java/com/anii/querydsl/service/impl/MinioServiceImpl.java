@@ -10,11 +10,15 @@ import io.minio.PutObjectArgs;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +77,14 @@ public class MinioServiceImpl implements IMinioService {
     }
 
     @Override
+    public Mono<String> putObject(String bucketName, String objectName, byte[] bytes) {
+        return Mono.using(() -> new ByteArrayInputStream(bytes),
+                is -> this.putObject(bucketName, objectName, is, Integer.toUnsignedLong(bytes.length)),
+                IOUtils::closeQuietly
+        );
+    }
+
+    @Override
     public Mono<InputStream> getObject(String bucketName, String objectName) {
         return Mono.fromFuture(() -> {
             try {
@@ -88,6 +100,20 @@ public class MinioServiceImpl implements IMinioService {
                 throw new BusinessException(BusinessConstantEnum.MINIO_GET_OBJECT_ERROR);
             }
         });
+    }
+
+    @Override
+    public Mono<String> getB64Image(String bucketName, String objectName) {
+        return this.getObject(bucketName, objectName)
+                .flatMap(inputStream ->
+                        Mono.using(() -> inputStream, is -> {
+                            try {
+                                return Mono.just(IOUtils.toString(is, StandardCharsets.UTF_8));
+                            } catch (IOException e) {
+                                return Mono.error(() -> new BusinessException(BusinessConstantEnum.MINIO_GET_OBJECT_ERROR));
+                            }
+                        }, IOUtils::closeQuietly)
+                );
     }
 
 }

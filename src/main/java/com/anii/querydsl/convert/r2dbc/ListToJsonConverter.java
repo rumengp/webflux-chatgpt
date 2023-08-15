@@ -8,12 +8,12 @@ import org.springframework.data.convert.WritingConverter;
 import java.util.List;
 
 @WritingConverter
-public enum ListToJsonConverter implements Converter<List, Json> {
+public enum ListToJsonConverter implements Converter<List<String>, Json> {
 
     INSTANCE;
 
     @Override
-    public Json convert(List source) {
+    public Json convert(List<String> source) {
         return Json.of(JSONUtils.toJsonString(source));
     }
 }

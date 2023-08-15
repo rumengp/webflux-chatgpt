@@ -47,7 +47,7 @@ public class RequestUtils {
         Map<String, String> queryParams = request.queryParams().toSingleValueMap();
         try {
             String json = JSONUtils.toJsonString(queryParams);
-            Mono<T> mono = Mono.just(JSONUtils.parseObject(json));
+            Mono<T> mono = Mono.just(JSONUtils.parseObject(json, clazz));
             if (needValid) {
                 mono = mono.doOnNext(t -> valid(t, groups));
             }
