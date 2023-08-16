@@ -6,21 +6,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@Component
-public final class JSONUtils {
+public abstract class JSONUtils {
 
-    private static ObjectMapper MAPPER = new ObjectMapper();
+    private JSONUtils() {
+    }
 
-    @Autowired
-    public void setGlobalMapper(ObjectMapper objectMapper) {
-        MAPPER = objectMapper;
+    private static ObjectMapper mapper = new ObjectMapper();
+
+    public static void setGlobalMapper(ObjectMapper objectMapper) {
+        mapper = objectMapper;
     }
 
     /**
@@ -30,7 +29,7 @@ public final class JSONUtils {
      */
     public static <T> T parseObject(String json, Class<T> clazz) {
         try {
-            return MAPPER.readValue(json, clazz);
+            return mapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
             throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
         }
@@ -38,7 +37,7 @@ public final class JSONUtils {
 
     public static <T> T parseObject(String json, TypeReference<T> typeReference) {
         try {
-            return MAPPER.readValue(json, typeReference);
+            return mapper.readValue(json, typeReference);
         } catch (JsonProcessingException e) {
             throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
         }
@@ -50,7 +49,7 @@ public final class JSONUtils {
         }
 
         try {
-            return MAPPER.readValue(json, MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
+            return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (JsonProcessingException e) {
             throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
         }
@@ -62,7 +61,7 @@ public final class JSONUtils {
         }
 
         try {
-            return MAPPER.writeValueAsString(object);
+            return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new BusinessException(BusinessConstantEnum.JSON_PARSE_FAILED, e);
         }
