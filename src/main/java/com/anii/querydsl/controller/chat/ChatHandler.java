@@ -30,9 +30,11 @@ public class ChatHandler {
                 .path("/chat", router ->
                         router.POST("/", this::createNewChat)
                                 .GET("/", this::findAll)
-                                .GET("/{id}", this::findById)
-                                .PUT("/{id}", this::updateById)
-                                .DELETE("/{id}", this::deleteById)
+                                .path("/{id}", c ->
+                                        c.GET(this::findById)
+                                                .PUT(this::updateById)
+                                                .DELETE(this::deleteById)
+                                )
                                 .POST("/{id}/stream", this::chatStream)
                 )
                 .build();

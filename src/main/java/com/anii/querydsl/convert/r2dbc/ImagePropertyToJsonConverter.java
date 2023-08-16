@@ -9,6 +9,9 @@ import org.springframework.data.convert.WritingConverter;
 @WritingConverter
 public enum ImagePropertyToJsonConverter implements Converter<ChatImage.Property, Json> {
 
+    /**
+     * 单例模式
+     */
     INSTANCE;
 
     @Override

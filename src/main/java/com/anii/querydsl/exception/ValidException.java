@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ValidException extends RuntimeException {
 
-    private Errors errors;
+    private final transient Errors errors;
 
     public ValidException(Errors errors) {
         this.errors = errors;

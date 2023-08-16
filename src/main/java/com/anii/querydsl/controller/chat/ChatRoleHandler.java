@@ -27,9 +27,10 @@ public class ChatRoleHandler {
                 .path("/chat/role", router ->
                         router.POST("/", this::createNewRole)
                                 .GET("/", this::findAll)
-                                .GET("/{id}", this::findById)
-                                .PUT("/{id}", this::updateById)
-                                .DELETE("/{id}", this::deleteById)
+                                .path("/{id}", c ->
+                                        c.GET(this::findById)
+                                                .PUT(this::updateById)
+                                                .DELETE(this::deleteById))
                 )
                 .build();
     }

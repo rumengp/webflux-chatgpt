@@ -3,10 +3,7 @@ package com.anii.querydsl.service.impl;
 import com.anii.querydsl.common.BusinessConstantEnum;
 import com.anii.querydsl.exception.BusinessException;
 import com.anii.querydsl.service.IMinioService;
-import io.minio.BucketExistsArgs;
-import io.minio.GetObjectArgs;
-import io.minio.MinioAsyncClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +31,7 @@ public class MinioServiceImpl implements IMinioService {
                         return minioAsyncClient.listBuckets();
                     } catch (Exception e) {
                         log.error(e.getMessage());
-                        throw new RuntimeException(e);
+                        throw new BusinessException(BusinessConstantEnum.MINIO_CONNECT_ERROR);
                     }
                 })
                 .flatMapMany(Flux::fromIterable)
@@ -52,7 +49,7 @@ public class MinioServiceImpl implements IMinioService {
                 );
             } catch (Exception e) {
                 log.error(e.getMessage());
-                throw new RuntimeException(e);
+                throw new BusinessException(BusinessConstantEnum.MINIO_CONNECT_ERROR);
             }
         });
     }
@@ -73,7 +70,7 @@ public class MinioServiceImpl implements IMinioService {
                         throw new BusinessException(BusinessConstantEnum.MINIO_PUT_OBJECT_ERROR);
                     }
                 })
-                .map(objectWriteResponse -> objectWriteResponse.object());
+                .map(GenericResponse::object);
     }
 
     @Override

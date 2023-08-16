@@ -55,7 +55,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
         return Mono.just(id)
                 .zipWith(UserContextHolder.getUsername(), repository::findByIdAndUsername)
                 .flatMap(Function.identity())
-                .switchIfEmpty(Mono.error(() -> new NotFoundException()));
+                .switchIfEmpty(Mono.error(NotFoundException::new));
     }
 
     @Override
@@ -73,8 +73,8 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     public Mono<Chat> createNewChat(ChatCreateRequest request) {
         // 先检查是否存在该角色
         return roleRepository.findById(request.roleId())
-                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
-                .map(chatRole -> MAPPER.fromChatRole(chatRole))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NotFoundException::new)))
+                .map(MAPPER::fromChatRole)
                 .flatMap(repository::save);
     }
 
@@ -82,7 +82,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     public Mono<Chat> updateById(Long id, ChatUpdateRequest req) {
         return UserContextHolder.getUsername()
                 .flatMap(username -> repository.findByIdAndUsername(id, username))
-                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NotFoundException::new)))
                 .doOnNext(chat -> MAPPER.copyProperties(req, chat))
                 .flatMap(repository::save);
     }
@@ -104,7 +104,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
                         MessageMapper.MAPPER.toCompletion(c, messages)
                 )
                 .flatMapMany(client::chatStream)
-                .onErrorMap(e -> e instanceof GPTException, e -> new BusinessException(e.getMessage(), ((GPTException) e).getCode()))
+                .onErrorMap(GPTException.class::isInstance, e -> new BusinessException(e.getMessage(), ((GPTException) e).getCode()))
                 .cache(); // 必须使用cache转化为热源，否则在保存和返回前端时发起多次请求
 
         Mono<String> saveUserMessage = Mono.just(req.content())

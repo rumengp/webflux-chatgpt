@@ -43,7 +43,7 @@ public class Tuple3<T1, T2, T3> {
 
     public static <T1, T2, T3>
     Tuple3<T1, T2, T3> of(@NonNull T1 first, @NonNull T2 second, @NonNull T3 third) {
-        return new Tuple3(first, second, third);
+        return new Tuple3<>(first, second, third);
     }
 
     public static <T1, T2, T3>
@@ -52,26 +52,29 @@ public class Tuple3<T1, T2, T3> {
     }
 
     public static <T1, T2, T3>
-    Tuple3<T1, T2, T3> of(@NonNull Supplier<T1> firstSupplier, @NonNull Supplier<T2> secondSupplier, @NonNull Supplier<T3> thirdSupplier, Boolean lazy) {
+    Tuple3<T1, T2, T3> of(@NonNull Supplier<T1> firstSupplier, @NonNull Supplier<T2> secondSupplier, @NonNull Supplier<T3> thirdSupplier, boolean lazy) {
         if (lazy) {
-            return new Tuple3(firstSupplier, secondSupplier, thirdSupplier);
+            return new Tuple3<>(firstSupplier, secondSupplier, thirdSupplier);
         }
-        return new Tuple3(firstSupplier.get(), secondSupplier.get(), thirdSupplier.get());
+        return new Tuple3<>(firstSupplier.get(), secondSupplier.get(), thirdSupplier.get());
     }
 
     public T1 getFirst() {
-        return first = Optional.ofNullable(first)
+        first = Optional.ofNullable(first)
                 .orElseGet(firstSupplier);
+        return first;
     }
 
     public T2 getSecond() {
-        return second = Optional.ofNullable(second)
+        second = Optional.ofNullable(second)
                 .orElseGet(secondSupplier);
+        return second;
     }
 
     public T3 getThird() {
-        return third = Optional.ofNullable(third)
+        third = Optional.ofNullable(third)
                 .orElseGet(thirdSupplier);
+        return third;
     }
 
     @Override

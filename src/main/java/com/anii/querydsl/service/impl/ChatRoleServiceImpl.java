@@ -51,22 +51,13 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
         return Mono.just(id)
                 .zipWith(UserContextHolder.getUsername(), repository::findByIdAndUsername)
                 .flatMap(Function.identity())
-                .switchIfEmpty(Mono.error(() -> new NotFoundException()));
+                .switchIfEmpty(Mono.error(NotFoundException::new));
     }
 
     @Override
     public Mono<Void> deleteById(Long id) {
         return UserContextHolder.getUsername()
                 .flatMap(username -> repository.deleteByIdAndUsername(id, username));
-    }
-
-    private Mono<Void> assertExist(Long id) {
-        return Mono.just(id)
-                .zipWith(UserContextHolder.getUsername(), repository::existsByIdAndUsername)
-                .flatMap(Function.identity())
-                .filter(Boolean.TRUE::equals)
-                .switchIfEmpty(Mono.error(() -> new NotFoundException()))
-                .then();
     }
 
     private Mono<Void> assertNotExist(String nickName) {

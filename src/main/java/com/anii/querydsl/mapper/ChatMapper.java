@@ -11,13 +11,11 @@ public interface ChatMapper {
 
     ChatMapper MAPPER = Mappers.getMapper(ChatMapper.class);
 
-    @Mappings({
-            @Mapping(source = "id", target = "roleId"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "updateTime", ignore = true),
-            @Mapping(target = "createTime", ignore = true),
-            @Mapping(target = "username", ignore = true)
-    })
+
+    @Mapping(source = "id", target = "roleId")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
+    @Mapping(target = "createTime", ignore = true)
     Chat fromChatRole(ChatRole chatRole);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

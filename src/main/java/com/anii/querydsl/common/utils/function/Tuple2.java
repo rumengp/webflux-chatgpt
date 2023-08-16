@@ -38,7 +38,7 @@ public class Tuple2<T, U> {
 
     public static <T, U>
     Tuple2<T, U> of(@NonNull T first, @NonNull U second) {
-        return new Tuple2(first, second);
+        return new Tuple2<>(first, second);
     }
 
     public static <T, U>
@@ -47,21 +47,23 @@ public class Tuple2<T, U> {
     }
 
     public static <T, U>
-    Tuple2<T, U> of(@NonNull Supplier<T> firstSupplier, @NonNull Supplier<U> secondSupplier, Boolean lazy) {
+    Tuple2<T, U> of(@NonNull Supplier<T> firstSupplier, @NonNull Supplier<U> secondSupplier, boolean lazy) {
         if (lazy) {
-            return new Tuple2(firstSupplier, secondSupplier);
+            return new Tuple2<>(firstSupplier, secondSupplier);
         }
-        return new Tuple2(firstSupplier.get(), secondSupplier.get());
+        return new Tuple2<>(firstSupplier.get(), secondSupplier.get());
     }
 
     public T getFirst() {
-        return first = Optional.ofNullable(first)
+        first = Optional.ofNullable(first)
                 .orElseGet(firstSupplier);
+        return first;
     }
 
     public U getSecond() {
-        return second = Optional.ofNullable(second)
+        second = Optional.ofNullable(second)
                 .orElseGet(secondSupplier);
+        return second;
     }
 
     @Override

@@ -21,6 +21,6 @@ public interface BasePageRepository<T, ID> extends QuerydslR2dbcRepository<T, ID
         );
         return this.query(records).all()
                 .collectList()
-                .zipWith(count, (list, c) -> new PageImpl(list, pageRequest, c));
+                .zipWith(count, (list, c) -> new PageImpl<>(list, pageRequest, c));
     }
 }

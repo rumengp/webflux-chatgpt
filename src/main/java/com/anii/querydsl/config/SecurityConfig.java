@@ -33,11 +33,11 @@ public class SecurityConfig {
                         .pathMatchers("/**").authenticated()
                 )
                 .authenticationManager(reactiveAuthenticationManager)
-                .csrf(csrfSpec -> csrfSpec.disable())
-                .cors(corsSpec -> corsSpec.disable())
-                .formLogin(formLoginSpec -> formLoginSpec.disable())
-                .httpBasic(httpBasicSpec -> httpBasicSpec.disable())
-                .logout(logoutSpec -> logoutSpec.disable())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(ServerHttpSecurity.CorsSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .logout(ServerHttpSecurity.LogoutSpec::disable)
                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

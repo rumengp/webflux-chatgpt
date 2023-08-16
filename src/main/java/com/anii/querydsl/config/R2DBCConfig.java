@@ -23,7 +23,7 @@ public class R2DBCConfig {
 
     @Bean
     ReactiveAuditorAware<String> auditorAware() {
-        return () -> UserContextHolder.getUsername();
+        return UserContextHolder::getUsername;
     }
 
     @Bean

@@ -10,19 +10,17 @@ public class MinioConfig {
 
     @Bean
     public MinioAsyncClient minioAsyncClient(MinioProperties properties) {
-        MinioAsyncClient asyncClient = MinioAsyncClient.builder()
+        return MinioAsyncClient.builder()
                 .credentials(properties.getAccessKey(), properties.getSecretKey())
                 .endpoint(properties.getEndpoint())
                 .build();
-        return asyncClient;
     }
 
     @Bean
     public MinioClient minioClient(MinioProperties properties) {
-        MinioClient minioClient = MinioClient.builder()
+        return MinioClient.builder()
                 .credentials(properties.getAccessKey(), properties.getSecretKey())
                 .endpoint(properties.getEndpoint())
                 .build();
-        return minioClient;
     }
 }

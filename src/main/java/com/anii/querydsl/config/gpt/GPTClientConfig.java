@@ -55,8 +55,7 @@ public class GPTClientConfig {
                     .port(properties.getProxy().getPort()));
         }
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
-        WebClient webClient = builder.clientConnector(connector).build();
-        return webClient;
+        return builder.clientConnector(connector).build();
     }
 
     @Bean

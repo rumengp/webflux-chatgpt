@@ -14,9 +14,7 @@ import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.reactive.result.view.ViewResolver;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Slf4j
 @Component
@@ -39,18 +37,18 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
     @Override
     protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions
-                .route(isException(err -> err instanceof ValidException), this::handleValidException)
-                .andRoute(isException(err -> err instanceof NotFoundException), this::handleNotFoundException)
-                .andRoute(isException(err -> err instanceof BusinessException), this::handleBusinessException)
-                .andRoute(isException(err -> err instanceof Exception), this::handleException);
+                .route(isException(ValidException.class::isInstance), this::handleValidException)
+                .andRoute(isException(NotFoundException.class::isInstance), this::handleNotFoundException)
+                .andRoute(isException(BusinessException.class::isInstance), this::handleBusinessException)
+                .andRoute(isException(Exception.class::isInstance), this::handleException);
     }
 
     private Mono<ServerResponse> handleNotFoundException(ServerRequest request) {
         if (getError(request) instanceof NotFoundException e) {
-
+            return CommonResult.notFound(e.getMessage());
         }
-        NotFoundException exception = (NotFoundException) getError(request);
-        return CommonResult.notFound(exception.getMessage());
+
+        return Mono.empty();
     }
 
 
@@ -74,24 +72,11 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
      * 判断抛出的异常是否是指定的类型, 函数柯里化
      * isException(err -> err instanceof Exception)
      */
-    private RequestPredicate isException(Function<Throwable, Boolean> function) {
+    private RequestPredicate isException(Predicate<Throwable> function) {
         return request -> {
             Throwable error = getError(request);
-            return function.apply(error);
+            return function.test(error);
         };
-    }
-
-    /**
-     * 判断抛出的异常是否是指定的类型, 利用反射
-     */
-    private <T> RequestPredicate isException(Class<T> clazz) {
-        Objects.requireNonNull(clazz, "clazz not allow null");
-        return request ->
-                Optional.of(request)
-                        .map(this::getError)
-                        .map(Object::getClass)
-                        .map(clazz::isAssignableFrom)
-                        .orElse(Boolean.FALSE);
     }
 
     @Override
