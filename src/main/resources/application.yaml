@@ -16,6 +16,13 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null
+    mapper:
+      accept-case-insensitive-enums: true
+    serialization:
+      fail-on-self-references: false
+      write-self-references-as-null: true
+    deserialization:
+      read-unknown-enum-values-as-null: true
   main:
     allow-bean-definition-overriding: true
   codec:
