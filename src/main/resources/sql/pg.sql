@@ -6,15 +6,17 @@ CREATE TABLE users
     id          BIGSERIAL PRIMARY KEY,
     username    VARCHAR(64)  NOT NULL,
     password    VARCHAR(128) NOT NULL,
-    roles       JSON,
+    roles       JSONB,
+    status      VARCHAR(16),
     enabled     SMALLINT  DEFAULT 1,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 COMMENT ON TABLE users IS '用户表';
-COMMENT ON COLUMN users.roles IS '用户角色列表["user", "admin"]';
+COMMENT ON COLUMN users.roles IS '用户角色列表["USER", "ADMIN"]';
 COMMENT ON COLUMN users.enabled IS '用户是否启用。1 启用 0 禁用';
+COMMENT ON COLUMN users.status IS 'ENABLED,DISABLED,LOCKED;';
 
 -- 聊天角色
 CREATE TABLE chat_role

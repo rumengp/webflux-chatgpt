@@ -1,4 +1,7 @@
 package com.anii.querydsl.request;
 
-public record AuthRequest(String username, String password) {
+import jakarta.validation.constraints.NotNull;
+
+public record AuthRequest(@NotNull String username,
+                          @NotNull String password) {
 }

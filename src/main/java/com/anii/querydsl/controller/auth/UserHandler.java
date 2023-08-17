@@ -32,7 +32,7 @@ public class UserHandler {
     }
 
     private Mono<ServerResponse> login(ServerRequest request) {
-        return RequestUtils.parse(request, AuthRequest.class)
+        return RequestUtils.parseAndValid(request, AuthRequest.class)
                 .flatMap(userService::login)
                 .flatMap(CommonResult::ok);
     }

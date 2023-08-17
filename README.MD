@@ -42,7 +42,14 @@
    }
    ```
 
-   
+3. SpringBoot 不会发布`ContextStartedEvent`
+
+   ```java
+   public static void main(String[] args) {   					SpringApplication.run(WebfluxR2dbcQuerydslApplication.class, args).start(); // 调用start方法，有副作用，见https://stackoverflow.com/questions/38206676/contextstartedevent-not-broadcasted-on-spring-boot
+   }
+   ```
+
+   SpringBoot使用run启动只会触发`ContextRefreshedEvent`,如果需要`ContextStartedEvent`可以调用`start`方法
 
 ## 2 Webflux
 

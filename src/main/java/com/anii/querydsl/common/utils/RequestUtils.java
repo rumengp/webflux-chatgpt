@@ -46,12 +46,12 @@ public abstract class RequestUtils {
         Map<String, String> queryParams = request.queryParams().toSingleValueMap();
         try {
             String json = JSONUtils.toJsonString(queryParams);
-            Mono<T> mono = Mono.just(JSONUtils.parseObject(json, clazz));
-            if (needValid) {
-                mono = mono.doOnNext(t -> valid(t, groups));
-            }
-            return mono;
-
+            return Mono.just(JSONUtils.parseObject(json, clazz))
+                    .doOnNext(t -> {
+                        if (needValid) {
+                            valid(t, groups);
+                        }
+                    });
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to convert query parameters to class", e);
         }
@@ -61,12 +61,12 @@ public abstract class RequestUtils {
      * 将请求中的请求体和路径变量都转换到一个对象中
      */
     private static <T> Mono<T> POST(ServerRequest request, Class<T> clazz, boolean needValid, Class... groups) {
-        Mono<T> mono = request.bodyToMono(clazz);
-        if (needValid) {
-            mono = mono.doOnNext(t -> valid(t, groups));
-        }
-        return mono;
-
+        return request.bodyToMono(clazz)
+                .doOnNext(t -> {
+                    if (needValid) {
+                        valid(t, groups);
+                    }
+                });
     }
 
     public static <T> void valid(@NonNull T object, Class... groups) {
