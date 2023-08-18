@@ -14,4 +14,6 @@ public interface ChatRepository extends QuerydslR2dbcRepository<Chat, Long> {
     Flux<Chat> findAllByUsername(String username);
 
     Flux<Chat> findAllByUsernameAndRoleId(String username, Long roleId);
+
+    Mono<Boolean> existsByIdAndUsername(Long id, String username);
 }

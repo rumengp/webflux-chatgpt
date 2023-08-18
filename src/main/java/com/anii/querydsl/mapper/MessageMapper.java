@@ -4,6 +4,7 @@ import com.anii.querydsl.entity.Chat;
 import com.anii.querydsl.entity.ChatMessage;
 import com.anii.querydsl.gpt.chat.Completion;
 import com.anii.querydsl.gpt.chat.Message;
+import com.anii.querydsl.vo.ChatMessageVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -25,5 +26,7 @@ public interface MessageMapper {
     @Mapping(target = "user", source = "chat.username")
     @Mapping(target = "topP", source = "chat.propertyRandom")
     Completion toCompletion(Chat chat, List<Message> messages);
+
+    ChatMessageVo toMessageVo(ChatMessage message);
 
 }

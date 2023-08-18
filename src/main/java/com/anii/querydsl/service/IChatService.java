@@ -5,6 +5,7 @@ import com.anii.querydsl.request.chat.ChatCreateRequest;
 import com.anii.querydsl.request.chat.ChatMessageRequest;
 import com.anii.querydsl.request.chat.ChatUpdateRequest;
 import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
+import com.anii.querydsl.vo.ChatMessageVo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -17,4 +18,6 @@ public interface IChatService extends IService<Chat, Long> {
     Mono<Chat> updateById(Long id, ChatUpdateRequest req);
 
     Flux<String> chatStream(Long id, ChatMessageRequest req);
+
+    Flux<ChatMessageVo> listChatAndMessages(Long id, String username);
 }

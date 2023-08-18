@@ -18,6 +18,7 @@ import com.anii.querydsl.request.chat.ChatMessageRequest;
 import com.anii.querydsl.request.chat.ChatUpdateRequest;
 import com.anii.querydsl.request.chat.role.ChatRoleQueryRequest;
 import com.anii.querydsl.service.IChatService;
+import com.anii.querydsl.vo.ChatMessageVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +124,15 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
                 .then(Mono.empty()); // 采用一个空返回，并连接到返回值，可以保证被spring订阅，从而使用spring security写入的上下文
 
         return Flux.concat(replays, saveUserMessage, saveReplayMessage);
+    }
+
+    @Override
+    public Flux<ChatMessageVo> listChatAndMessages(Long id, String username) {
+
+        return repository.existsByIdAndUsername(id, username)
+                .flatMap(exists -> Mono.defer(() -> exists ? Mono.empty() : Mono.error(NotFoundException::new)))
+                .thenMany(messageRepository.findAllByChatIdOrderByCreateTimeDesc(id))
+                .map(MessageMapper.MAPPER::toMessageVo);
     }
 
 }

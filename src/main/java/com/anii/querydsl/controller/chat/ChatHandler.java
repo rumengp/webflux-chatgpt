@@ -1,6 +1,7 @@
 package com.anii.querydsl.controller.chat;
 
 import com.anii.querydsl.common.CommonResult;
+import com.anii.querydsl.common.UserContextHolder;
 import com.anii.querydsl.common.utils.RequestUtils;
 import com.anii.querydsl.request.chat.ChatCreateRequest;
 import com.anii.querydsl.request.chat.ChatMessageRequest;
@@ -34,10 +35,19 @@ public class ChatHandler {
                                         c.GET("", this::findById) // 嵌套的时候不能省略”“
                                                 .PUT("", this::updateById)
                                                 .DELETE("", this::deleteById)
+                                                .POST("/stream", this::chatStream)
+                                                .GET("/messages", this::chatList)
                                 )
-                                .POST("/{id:\\d+}/stream", this::chatStream)
                 )
                 .build();
+    }
+
+    private Mono<ServerResponse> chatList(ServerRequest request) {
+        Long id = Long.valueOf(request.pathVariable("id"));
+        return UserContextHolder.getUsername()
+                .flatMapMany(username -> chatService.listChatAndMessages(id, username))
+                .collectList()
+                .flatMap(CommonResult::ok);
     }
 
     private Mono<ServerResponse> chatStream(ServerRequest request) {

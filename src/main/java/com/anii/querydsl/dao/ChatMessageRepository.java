@@ -12,4 +12,6 @@ public interface ChatMessageRepository extends QuerydslR2dbcRepository<ChatMessa
     Flux<ChatMessage> findAllByChatIdLimit(Long chatId, Integer limit);
 
     Mono<Void> deleteByChatId(Long id);
+
+    Flux<ChatMessage> findAllByChatIdOrderByCreateTimeDesc(Long chatId);
 }

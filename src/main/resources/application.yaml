@@ -43,6 +43,9 @@ logging:
     org:
       springframework:
         r2dbc: debug
+    io:
+      r2dbc:
+        postgresql: debug
 
 gpt:
   timeout: 10s
