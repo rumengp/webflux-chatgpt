@@ -7,6 +7,6 @@ import reactor.core.publisher.Flux;
 
 public interface ChatImageRepository extends QuerydslR2dbcRepository<ChatImage, Long> {
 
-    @Query("SELECT * FROM chat_image WHERE username=:username AND id > :preId ORDER BY create_time DESC LIMIT :num")
+    @Query("SELECT * FROM chat_image WHERE username=:username AND id > :preId ORDER BY create_time ASC LIMIT :num")
     Flux<ChatImage> findAllRollout(String username, Long preId, Integer num);
 }

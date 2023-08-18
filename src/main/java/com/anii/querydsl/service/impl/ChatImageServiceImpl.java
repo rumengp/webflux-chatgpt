@@ -97,13 +97,14 @@ public class ChatImageServiceImpl extends ServiceImpl<ChatImageRepository, ChatI
             Flux<ChatImageVo> userImages = Flux.fromStream(imageObject)
                     .filter(StringUtils::isNotBlank)
                     .flatMap(objectName -> minioService.getB64Image(bucketName, objectName))
-                    .map(objectName ->
+                    .map(content ->
                             ChatImageVo.builder()
                                     .id(image.getId())
                                     .type(ChatImageVo.ChatImageVoTypeEnum.USER_IMAGE)
-                                    .content(objectName)
+                                    .content(content)
                                     .build()
-                    );
+                    )
+                    .onErrorResume(e -> Mono.defer(() -> Mono.just(new ChatImageVo(0L, null, e.getMessage()))));
 
             Flux<ChatImageVo> respImages = Flux.fromIterable(image.getRespObject())
                     .flatMap(objectName -> minioService.getB64Image(bucketName, objectName))
