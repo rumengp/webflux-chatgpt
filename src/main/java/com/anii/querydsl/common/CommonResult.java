@@ -62,23 +62,23 @@ public record CommonResult<T>(T data, String message, String code) {
     }
 
     public static Mono<ServerResponse> error() {
-        return error(ERROR_MESSAGE, ERROR_CODE);
+        return error(ERROR_MESSAGE, ERROR_CODE, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static Mono<ServerResponse> error(Exception exception) {
-        return error(exception.getMessage(), ERROR_CODE);
+        return error(exception.getMessage(), ERROR_CODE, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static Mono<ServerResponse> error(BusinessException exception) {
-        return error(exception.getMessage(), exception.getCode());
+        return error(exception.getMessage(), exception.getCode(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public static Mono<ServerResponse> error(String message) {
-        return error(message, ERROR_CODE);
+        return error(message, ERROR_CODE, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public static Mono<ServerResponse> error(String message, String code) {
-        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static Mono<ServerResponse> error(String message, String code, HttpStatus httpStatus) {
+        return ServerResponse.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new CommonResult<>("", message, code));
     }

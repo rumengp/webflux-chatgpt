@@ -10,6 +10,7 @@ import com.anii.querydsl.exception.NotFoundException;
 import com.anii.querydsl.request.chat.role.ChatRoleCreateRequest;
 import com.anii.querydsl.service.IChatRoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class ChatRoleServiceImpl extends ServiceImpl<ChatRoleRepository, ChatRol
     }
 
     @Override
+    @Transactional
     public Mono<Void> deleteById(Long id) {
         return UserContextHolder.getUsername()
                 .flatMap(username -> repository.deleteByIdAndUsername(id, username));

@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.anii.querydsl.mapper.ChatMapper.MAPPER;
@@ -44,18 +43,16 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     @Override
     @Transactional
     public Mono<Void> deleteById(Long id) {
-        return Mono.just(id)
-                .zipWith(UserContextHolder.getUsername(), repository::deleteByIdAndUsername)
-                .then(messageRepository.deleteByChatId(id))
-                .then();
+        return UserContextHolder.getUsername()
+                .flatMap(username -> repository.deleteByIdAndUsername(id, username))
+                .then(messageRepository.deleteByChatId(id));
     }
 
     @Override
     public Mono<Chat> findById(Long id) {
-        return Mono.just(id)
-                .zipWith(UserContextHolder.getUsername(), repository::findByIdAndUsername)
-                .flatMap(Function.identity())
-                .switchIfEmpty(Mono.error(NotFoundException::new));
+        return UserContextHolder.getUsername()
+                .flatMap(username -> repository.findByIdAndUsername(id, username))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(NotFoundException::new)));
     }
 
     @Override

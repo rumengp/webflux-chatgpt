@@ -1,6 +1,7 @@
 package com.anii.querydsl.request.chat.role;
 
 import com.anii.querydsl.enums.chat.ModelTypeEnum;
+import com.anii.querydsl.valid.group.Create;
 import jakarta.validation.constraints.NotNull;
 
 public record ChatRoleCreateRequest(
@@ -8,7 +9,7 @@ public record ChatRoleCreateRequest(
         String command,
         @NotNull(message = "角色模型不能为空")
         ModelTypeEnum model,
-        @NotNull(message = "角色昵称不能为空")
+        @NotNull(message = "角色昵称不能为空", groups = {Create.class})
         String nickName,
         String welcome,
         String mark,

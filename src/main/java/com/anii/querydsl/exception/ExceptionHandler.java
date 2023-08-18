@@ -5,15 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.reactive.result.view.ViewResolver;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -40,7 +44,18 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
                 .route(isException(ValidException.class::isInstance), this::handleValidException)
                 .andRoute(isException(NotFoundException.class::isInstance), this::handleNotFoundException)
                 .andRoute(isException(BusinessException.class::isInstance), this::handleBusinessException)
+                .andRoute(isException(ResponseStatusException.class::isInstance), this::handleResponseStatusException)
                 .andRoute(isException(Exception.class::isInstance), this::handleException);
+    }
+
+    private Mono<ServerResponse> handleResponseStatusException(ServerRequest request) {
+        if (getError(request) instanceof ResponseStatusException e) {
+            Map<String, Object> errorAttributes = getErrorAttributes(request, ErrorAttributeOptions.defaults());
+            HttpStatus status = HttpStatus.valueOf((Integer) errorAttributes.get("status"));
+            return CommonResult.error(e.getMessage(), Integer.toString(status.value()), status);
+        }
+
+        return Mono.empty();
     }
 
     private Mono<ServerResponse> handleNotFoundException(ServerRequest request) {
@@ -50,7 +65,6 @@ public class ExceptionHandler extends AbstractErrorWebExceptionHandler implement
 
         return Mono.empty();
     }
-
 
     private Mono<ServerResponse> handleBusinessException(ServerRequest request) {
         BusinessException error = (BusinessException) getError(request);
