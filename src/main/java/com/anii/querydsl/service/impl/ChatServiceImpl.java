@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -56,14 +55,14 @@ public class ChatServiceImpl extends ServiceImpl<ChatRepository, Chat, Long> imp
     }
 
     @Override
-    public Mono<List<Chat>> findAllByRole(ChatRoleQueryRequest request) {
+    public Flux<Chat> findAllByRole(ChatRoleQueryRequest request) {
         return UserContextHolder.getUsername()
                 .flatMapMany(username -> {
                     if (Objects.isNull(request.roleId())) {
                         return repository.findAllByUsername(username);
                     }
                     return repository.findAllByUsernameAndRoleId(username, request.roleId());
-                }).collectList();
+                });
     }
 
     @Override

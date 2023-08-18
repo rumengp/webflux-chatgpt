@@ -10,14 +10,14 @@ import reactor.core.publisher.Mono;
 
 public record CommonResult<T>(T data, String message, String code) {
 
-    private static String SUCCESS_MESSAGE = "success";
-    private static String SUCCESS_CODE = "0";
+    private static final String SUCCESS_MESSAGE = "success";
+    private static final String SUCCESS_CODE = "0";
 
-    private static String BAD_MESSAGE = "非法参数";
-    private static String BAD_CODE = "10400";
+    private static final String BAD_MESSAGE = "非法参数";
+    private static final String BAD_CODE = "10400";
 
-    private static String ERROR_MESSAGE = "服务器异常";
-    private static String ERROR_CODE = "10500";
+    private static final String ERROR_MESSAGE = "服务器异常";
+    private static final String ERROR_CODE = "10500";
 
     public static <T> Mono<ServerResponse> ok(Flux<T> data) {
         Flux<CommonResult<T>> mapped = data.map(d -> new CommonResult<>(d, SUCCESS_MESSAGE, SUCCESS_CODE));
